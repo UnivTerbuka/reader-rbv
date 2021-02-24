@@ -62,8 +62,7 @@ class Buku:
         )
         self.logger.debug("Mencari submodul")
         soup = BeautifulSoup(res.text, "html.parser")
-        ths: List[Tag] = soup.findAll("th")
-        for th in ths:
+        for th in soup.findAll("th"):
             a: Tag = th.find("a")
             if not a:
                 continue

@@ -6,10 +6,18 @@ from . import Page
 
 
 class Modul:
-    def __init__(self, modul: str, session: Session):
-        self.modul = modul
+    def __init__(
+        self,
+        subfolder: str,
+        doc: str,
+        base: str,
+        session: Session,
+        cache: Cache[int, Page] = LRUCache(100),
+    ):
+        self.subfolder = subfolder
+        self.base = base
         self.session = Session
-        self.cache: Cache[int, Page] = LRUCache(100)
+        self.cache = cache
 
     @cachedmethod(attrgetter("cache"))
     def get(self, page: int):

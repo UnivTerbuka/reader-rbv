@@ -1,13 +1,11 @@
 import logging
 
-from bs4 import BeautifulSoup
+from cachetools import Cache, TTLCache, cachedmethod
 from operator import attrgetter
 from requests import Session
-from cachetools import TTLCache, Cache, cachedmethod
 
-from reader_rbv.exception import InvalidCredential, Unreachable, BookNotFound
+from reader_rbv.exception import BookNotFound
 from . import Buku
-from .utils import get_captcha
 
 
 class Reader:

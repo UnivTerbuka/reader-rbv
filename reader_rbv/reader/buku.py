@@ -14,19 +14,12 @@ class Buku:
         base: str,
         session: Session,
         cache: Cache[str, Modul] = TTLCache[str, Modul](10, 1800),
-        moduls: Optional[Dict[str, Modul]] = None,
     ):
         self.kode = kode
         self.base = base
         self.session = session
         self.cache = cache
-        if moduls:
-            for key, value in moduls.items():
-                self.cache[key] = value
         self.moduls: List[str] = list()
-
-    def fetch(self):
-        pass
 
     @cachedmethod(attrgetter("cache"))
     def get(self, doc: str):

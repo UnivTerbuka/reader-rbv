@@ -1,3 +1,5 @@
+import logging
+
 from cachetools import Cache, TTLCache, cachedmethod
 from operator import attrgetter
 from requests import Session
@@ -20,9 +22,13 @@ class Buku:
         self.session = session
         self.cache = cache
         self.moduls: List[str] = list()
+        self.logger = logging.getLogger(f"Buku:{kode}")
 
     @cachedmethod(attrgetter("cache"))
     def get(self, doc: str):
         if doc not in self.moduls:
-            raise ModulNotFound(f"Modul {doc} tidak ditemukan di buku {self.kode}")
+            self.logger.warning(f"Submodul {doc} tidak ada")
+            raise ModulNotFound(f"Modul {doc} tidak ada di buku {self.kode}")
+        else:
+            self.logger.debug(f"Submodul {doc} ditemukan")
         return Modul(self.kode, doc, self.base, self.session)

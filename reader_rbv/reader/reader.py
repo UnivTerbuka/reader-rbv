@@ -36,4 +36,10 @@ class Reader:
             raise BookNotFound(f"Buku dengan kode {kode} tidak ditemukan")
         else:
             self.logger.debug(f"Buku {kode} ditemukan")
-        return Buku(kode, self.base, self.session)
+        return Buku(
+            kode=kode,
+            base=self.base,
+            session=self.session,
+            username=self.username,
+            password=self.password,
+        )

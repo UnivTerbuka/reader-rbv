@@ -5,7 +5,7 @@ from operator import attrgetter
 from requests import Session
 from cachetools import TTLCache, Cache, cachedmethod
 
-from reader_rbv.exception import InvalidCredential, Unreachable, NotFound
+from reader_rbv.exception import InvalidCredential, Unreachable, BookNotFound
 from . import Buku
 from .utils import get_captcha
 
@@ -33,5 +33,5 @@ class Reader:
         params = {"modul": kode}
         res = self.session.get(self.base, params=params)
         if not res.ok or not res.text:
-            raise NotFound(f"Buku dengan kode {kode} tidak ditemukan")
+            raise BookNotFound(f"Buku dengan kode {kode} tidak ditemukan")
         return Buku(kode, self.base, self.session)

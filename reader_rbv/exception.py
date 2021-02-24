@@ -4,5 +4,8 @@ class Unreachable(Exception):
 class InvalidCredential(Exception):
     pass
 
-class NotFound(Exception):
+class BookNotFound(Exception):
+    pass
+
+class ModulNotFound(Exception):
     pass

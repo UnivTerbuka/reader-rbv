@@ -3,7 +3,7 @@ import logging
 from cachetools import Cache, TTLCache, cachedmethod
 from operator import attrgetter
 from requests import Session
-from typing import Dict, List, Optional
+from typing import List
 
 from reader_rbv.exception import ModulNotFound
 from . import Modul

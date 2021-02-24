@@ -1,11 +1,6 @@
 from .reader import Font, Page, Modul, Reader
+from .reader_rbv import ReaderRbv
 
-__version__ = "0.1.0"
+from .version import __version__  # NOQA
 
-
-__all__ = [
-    "Font",
-    "Page",
-    "Modul",
-    "Reader",
-]
+__all__ = ["Font", "Page", "Modul", "Reader", "ReaderRbv"]

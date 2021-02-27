@@ -24,6 +24,9 @@ class Modul(Mapping[int, Page]):
         if not self.max_page:
             self.fetch()
 
+    def __getitem__(self, key: int) -> Page:
+        return self.get_page(key)
+
     def __iter__(self):
         self.__current__ = 1
         return self

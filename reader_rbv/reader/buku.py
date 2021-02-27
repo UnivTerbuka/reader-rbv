@@ -1,10 +1,10 @@
 import logging
 
 from bs4 import BeautifulSoup, Tag
-from cachetools import Cache, TTLCache, cachedmethod
+from collections import UserDict
 from operator import attrgetter
 from requests import Session
-from typing import List, Optional
+from typing import Dict, Optional, Mapping
 
 from reader_rbv.exception import ModulNotFound
 from . import Modul
@@ -16,7 +16,7 @@ def parse_doc(href: str) -> str:
     return href.split("=")[-1]
 
 
-class Buku:
+class Buku(Mapping[str, Modul]):
     def __init__(
         self,
         kode: str,
@@ -24,32 +24,29 @@ class Buku:
         session: Session,
         username: str,
         password: str,
-        cache: Cache[str, Modul] = TTLCache[str, Modul](10, 1800),
-        moduls: Optional[List[str]] = None,
+        moduls: Optional[Dict[str, Modul]] = None,
     ):
         self.kode = kode
         self.base = base
         self.session = session
         self.username = username
         self.password = password
-        self.cache = cache
         if moduls:
             self.moduls = moduls
         else:
-            self.moduls = list()
+            self.moduls = dict()
         if not self.moduls:
             self.fetch()
         self.logger = logging.getLogger(f"Buku:{kode}")
 
-    @cachedmethod(attrgetter("cache"))
-    def get(self, doc: str):
-        # DAFIS.pdf
-        if doc not in self.moduls:
-            self.logger.warning(f"Submodul {doc} tidak ada")
-            raise ModulNotFound(f"Modul {doc} tidak ada di buku {self.kode}")
-        else:
-            self.logger.debug(f"Submodul {doc} ditemukan")
-        return Modul(self.kode, doc, self.base, self.session)
+    def __getitem__(self, key: str):
+        return self.moduls[key]
+
+    def __iter__(self):
+        return iter(self.moduls)
+
+    def __len__(self):
+        return len(self.moduls)
 
     def fetch(self):
         params = {"modul": self.kode}
@@ -67,5 +64,10 @@ class Buku:
             if not a:
                 continue
             doc = parse_doc(a["href"])
+            self.moduls[doc] = Modul(
+                subfolder=self.kode,
+                doc=doc,
+                base=self.base,
+                session=self.session,
+            )
             self.logger.debug(f"Dapat submodul {doc}")
-            self.moduls.append(doc)

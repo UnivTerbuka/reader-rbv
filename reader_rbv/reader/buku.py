@@ -65,6 +65,7 @@ class Buku(Mapping[str, Modul]):
                 continue
             doc = parse_doc(a["href"])
             self.moduls[doc] = Modul(
+                nama=a.getText(),
                 subfolder=self.kode,
                 doc=doc,
                 base=self.base,

@@ -11,14 +11,12 @@ from . import Buku
 class Reader:
     def __init__(
         self,
-        kode: str,
         username: str,
         password: str,
         base: str = "http://www.pustaka.ut.ac.id/reader/",
         session: Session = Session(),
         cache: Cache[str, Buku] = TTLCache[str, Buku](10, 600),
     ):
-        self.kode = kode
         self.username = username
         self.password = password
         self.session = session

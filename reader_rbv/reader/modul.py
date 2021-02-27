@@ -1,9 +1,10 @@
 from cachetools import Cache, LRUCache, cachedmethod
 from operator import attrgetter
 from requests import Session
-from typing import Optional, Mapping
+from typing import List, Mapping, Optional
 
 from . import Page
+from .utils import get_url
 
 
 class Modul(Mapping[int, Page]):
@@ -13,16 +14,21 @@ class Modul(Mapping[int, Page]):
         subfolder: str,
         doc: str,
         base: str,
+        username: str,
+        password: str,
         session: Session,
         cache: Cache[int, Page] = LRUCache(100),
         max_page: Optional[int] = None,
     ):
         self.nama = nama
         self.subfolder = subfolder
+        self.doc = doc
         self.base = base
-        self.session = Session
+        self.session = session
         self.cache = cache
         self._max_page = max_page
+        self.__username__ = username
+        self.__password__ = password
         if not self.max_page:
             self.fetch()
 
@@ -60,6 +66,33 @@ class Modul(Mapping[int, Page]):
     def fetch(self) -> None:
         pass
 
+    def add_cache(self, pages: List[Page]):
+        for page in pages:
+            self.cache[page.pages] = page
+
     @attrgetter("cache")
     def get_page(self, page: int) -> Page:
-        pass
+        if page < 1:
+            raise KeyError("key harus > 0")
+        elif self.max_page and page > self.max_page:
+            raise KeyError("key melebihi halaman maksimal")
+        params = self.__make_params__(page)
+        res = get_url(
+            session=self.session,
+            url=self.base,
+            params=params,
+            username=self.__username__,
+            password=self.__password__,
+        )
+        jsonp = res.text[1:-1]
+        pages = Page.from_jsonp(jsonp)
+        self.add_cache(pages)
+        return self.cache[page]
+
+    def __make_params__(self, page: int, format_: str = "jsonp") -> dict:
+        return {
+            "doc": self.doc,
+            "format": format_,
+            "subfolder": self.subfolder,
+            "page": (page // 10 + 1) * 10,
+        }

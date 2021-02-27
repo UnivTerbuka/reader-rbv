@@ -1,5 +1,5 @@
-from .reader import Font, Page, Modul, Reader
+from .reader import Font, Text, Page, Modul, Reader
 
 from .version import __version__  # NOQA
 
-__all__ = ["Font", "Page", "Modul", "Reader"]
+__all__ = ["Font", "Text", "Page", "Modul", "Reader"]

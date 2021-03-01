@@ -35,6 +35,8 @@ class Page:
     def __str__(self) -> str:
         if self.texts:
             return self.texts
+        elif not self.text:
+            return "Halaman kosong / Tidak ditemukan. :("
         now = 0
         out = ""
         for text in self.text:

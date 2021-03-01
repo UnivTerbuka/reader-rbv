@@ -93,6 +93,6 @@ class Modul(Mapping[int, Page]):
         return {
             "doc": self.doc,
             "format": format_,
-            "subfolder": self.subfolder,
+            "subfolder": self.subfolder + "/",
             "page": (page // 10 + 1) * 10,
         }

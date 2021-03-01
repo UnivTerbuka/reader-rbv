@@ -12,8 +12,8 @@ repos:
       - id: flake8
         args:
           - --ignore=E501
-  - repo: git://github.com/pre-commit/mirrors-pylint
-    rev: v2.6.0
+  - repo: git://github.com/pycqa/pylint
+    rev: pylint-2.7.2
     hooks:
       - id: pylint
         files: ^reader_rbv/.*\.py$

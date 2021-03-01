@@ -30,3 +30,16 @@ class Page:
                 )
             )
         return results
+
+    def __str__(self) -> str:
+        if hasattr(self, "__text__"):
+            return getattr(self, "__text__", "Halaman kosong")
+        now = 0
+        out = ""
+        for text in self.text:
+            if text.height != now:
+                out += "\n"
+                now = text.height
+            out += str(text)
+        setattr(self, "__text__", out)
+        return out

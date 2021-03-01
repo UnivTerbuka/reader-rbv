@@ -3,9 +3,14 @@ import logging
 from cachetools import Cache, TTLCache, cachedmethod
 from operator import attrgetter
 from requests import Session
+from typing import MutableMapping
 
 from reader_rbv.exception import BookNotFound
 from . import Buku
+
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0"
+}
 
 
 class Reader:
@@ -15,14 +20,14 @@ class Reader:
         password: str,
         base: str = "http://www.pustaka.ut.ac.id/reader/",
         session: Session = Session(),
-        cache: Cache[str, Buku] = TTLCache[str, Buku](10, 600),
     ):
         self.username = username
         self.password = password
         self.session = session
         self.base = base
-        self.cache = cache
+        self.cache: MutableMapping[str, Buku] = TTLCache(10, 600)
         self.logger = logging.getLogger(f"Reader:{username}")
+        self.session.headers.update(HEADERS)
 
     @cachedmethod(attrgetter("cache"))
     def get(self, kode: str) -> Buku:

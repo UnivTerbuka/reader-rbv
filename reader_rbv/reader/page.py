@@ -13,6 +13,7 @@ class Page:
     width: int
     fonts: List[Font] = attr.field(factory=list)
     text: List[Text] = attr.field(factory=list, converter=Text.from_list)  # type: ignore
+    texts: str = ""
 
     @classmethod
     def from_jsonp(cls, jsonp: str) -> List["Page"]:
@@ -32,8 +33,8 @@ class Page:
         return results
 
     def __str__(self) -> str:
-        if hasattr(self, "__text__"):
-            return getattr(self, "__text__", "Halaman kosong")
+        if self.texts:
+            return self.texts
         now = 0
         out = ""
         for text in self.text:
@@ -41,5 +42,5 @@ class Page:
                 out += "\n"
                 now = text.height
             out += str(text)
-        setattr(self, "__text__", out)
+        self.texts = out
         return out

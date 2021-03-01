@@ -1,12 +1,9 @@
 import logging
 
 from bs4 import BeautifulSoup, Tag
-from collections import UserDict
-from operator import attrgetter
 from requests import Session
 from typing import Dict, Optional, Mapping
 
-from reader_rbv.exception import ModulNotFound
 from . import Modul
 from .utils import get_url
 

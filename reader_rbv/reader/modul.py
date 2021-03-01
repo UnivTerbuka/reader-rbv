@@ -1,7 +1,7 @@
-from cachetools import Cache, LRUCache, cachedmethod
+from cachetools import LRUCache, cachedmethod
 from operator import attrgetter
 from requests import Session
-from typing import List, Mapping, MutableMapping, Optional, Type
+from typing import List, Mapping, MutableMapping, Optional
 from urllib.parse import urlencode
 
 from . import Page

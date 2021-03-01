@@ -11,8 +11,8 @@ class Page:
     pages: int
     height: int
     width: int
-    fonts: List[Font] = attr.field(factory=list)
-    text: List[Text] = attr.field(factory=list, converter=Text.from_list)  # type: ignore
+    fonts: List[Font] = attr.ib(factory=list)
+    text: List[Text] = attr.ib(factory=list, converter=Text.from_list)  # type: ignore
     texts: str = ""
 
     @classmethod

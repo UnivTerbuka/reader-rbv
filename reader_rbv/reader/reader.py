@@ -1,6 +1,6 @@
 import logging
 
-from cachetools import Cache, TTLCache, cachedmethod
+from cachetools import TTLCache, cachedmethod
 from operator import attrgetter
 from requests import Session
 from typing import MutableMapping

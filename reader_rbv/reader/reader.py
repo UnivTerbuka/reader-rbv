@@ -22,7 +22,7 @@ class Reader:
         self.session = session
         self.base = base
         self.cache = cache
-        self.logger = logging.getLogger(f"Reader:{kode}")
+        self.logger = logging.getLogger(f"Reader:{username}")
 
     @cachedmethod(attrgetter("cache"))
     def get(self, kode: str) -> Buku:

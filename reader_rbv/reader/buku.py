@@ -26,6 +26,7 @@ class Buku(Mapping[str, Modul]):
         password: str,
         moduls: Optional[Dict[str, Modul]] = None,
     ):
+        self.logger = logging.getLogger(f"Buku:{kode}")
         self.kode = kode
         self.base = base
         self.session = session
@@ -37,7 +38,6 @@ class Buku(Mapping[str, Modul]):
             self.moduls = dict()
         if not self.moduls:
             self.fetch()
-        self.logger = logging.getLogger(f"Buku:{kode}")
 
     def __getitem__(self, key: str):
         return self.moduls[key]

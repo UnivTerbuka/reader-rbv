@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup, Tag
 from requests import Response, Session
-from typing import Union
+from typing import Dict, Optional, Union
 
 from reader_rbv.exception import InvalidCredential, Unreachable
 
@@ -27,11 +27,12 @@ def get_captcha(form: Tag) -> str:
 def get_url(
     session: Session,
     url: str,
-    params: dict,
     username: str,
     password: str,
+    params: Optional[Dict[str, str]] = None,
+    headers: Optional[Dict[str, str]] = None
 ) -> Response:
-    res = session.get(url, params=params)
+    res = session.get(url, params=params, headers=headers)
     if not res.ok:
         raise Unreachable("RBV tidak dapat dihubungi")
     elif "Login" not in res.text:

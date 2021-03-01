@@ -25,7 +25,7 @@ class Modul(Mapping[int, Page]):
         self.doc = doc
         self.base = base
         self.session = session
-        self.cache = cache
+        self.cache: MutableMapping[int, Page] = LRUCache(100)
         self._max_page = max_page
         self.__username__ = username
         self.__password__ = password
@@ -68,9 +68,9 @@ class Modul(Mapping[int, Page]):
 
     def add_cache(self, pages: List[Page]):
         for page in pages:
-            self.cache[page.pages] = page
+            self.cache[page.number] = page
 
-    @attrgetter("cache")
+    @cachedmethod(attrgetter("cache"))
     def get_page(self, page: int) -> Page:
         if page < 1:
             raise KeyError("key harus > 0")

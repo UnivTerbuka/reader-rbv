@@ -71,7 +71,8 @@ class Modul(Mapping[int, Page]):
         raise ValueError("max_page harus int")
 
     def fetch(self) -> None:
-        pass
+        page1 = self.get_page(1)
+        self.max_page = page1.pages
 
     def add_cache(self, pages: List[Page]):
         for page in pages:

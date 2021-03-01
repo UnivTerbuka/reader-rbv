@@ -44,7 +44,8 @@ def get_url(
         "ccaptcha": get_captcha(soup),
         "submit": "Submit",
     }
-    res = session.post(url, params=params)
+    headers = {"Referer": res.url}
+    res = session.post(url, data=data, params=params, headers=headers)
     if not res.ok:
         raise InvalidCredential("Username / password salah")
     return res

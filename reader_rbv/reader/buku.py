@@ -63,12 +63,16 @@ class Buku(Mapping[str, Modul]):
             a: Tag = th.find("a")
             if not a:
                 continue
-            doc = parse_doc(a["href"])
+            url = a["href"]
+            doc = parse_doc(url)
             self.moduls[doc] = Modul(
                 nama=a.getText(),
                 subfolder=self.kode,
                 doc=doc,
                 base=self.base,
+                url=url,
+                username=self.username,
+                password=self.password,
                 session=self.session,
             )
             self.logger.debug(f"Dapat submodul {doc}")

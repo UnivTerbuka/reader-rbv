@@ -1,10 +1,16 @@
 from cachetools import Cache, LRUCache, cachedmethod
 from operator import attrgetter
 from requests import Session
-from typing import List, Mapping, Optional
+from typing import List, Mapping, MutableMapping, Optional, Type
+from urllib.parse import urlencode
 
 from . import Page
 from .utils import get_url
+
+
+def clean_doc(doc: str) -> str:
+    # DAFIS.pdf -> DAFIS
+    return doc.rstrip(".pdf")
 
 
 class Modul(Mapping[int, Page]):
@@ -14,16 +20,17 @@ class Modul(Mapping[int, Page]):
         subfolder: str,
         doc: str,
         base: str,
+        url: str,
         username: str,
         password: str,
         session: Session,
-        cache: Cache[int, Page] = LRUCache(100),
         max_page: Optional[int] = None,
     ):
         self.nama = nama
         self.subfolder = subfolder
-        self.doc = doc
+        self.doc = clean_doc(doc)
         self.base = base
+        self.url = url
         self.session = session
         self.cache: MutableMapping[int, Page] = LRUCache(100)
         self._max_page = max_page
@@ -77,12 +84,14 @@ class Modul(Mapping[int, Page]):
         elif self.max_page and page > self.max_page:
             raise KeyError("key melebihi halaman maksimal")
         params = self.__make_params__(page)
+        headers = {"Referer": self.base + "?" + urlencode({"modul": self.subfolder})}
         res = get_url(
             session=self.session,
-            url=self.base,
+            url=self.base + "services/view.php",
             params=params,
             username=self.__username__,
             password=self.__password__,
+            headers=headers,
         )
         jsonp = res.text[1:-1]
         pages = Page.from_jsonp(jsonp)

@@ -28,3 +28,6 @@ class Text:
         for dat in data:
             results.append(cls.from_data(dat))
         return results
+
+    def __str__(self):
+        return self.text

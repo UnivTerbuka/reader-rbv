@@ -1,8 +1,28 @@
 [tool.poetry]
 name = "reader-rbv"
 version = "0.1.0"
-description = ""
-authors = ["hexatester <revolusi147id@gmail.com>"]
+description = "SDK / Client python untuk Ruang Baca Virtual Universitas Terbuka."
+authors = ["hexatester <habibrohman@protonmail.com>"]
+license = "AGPLv3"
+readme = "README.md"
+keywords = [
+    "univterbuka",
+    "RBV",
+    "reader",
+    "flowpaper",
+]
+classifiers=[
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: GNU Affero General Public License v3",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Topic :: Education",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"

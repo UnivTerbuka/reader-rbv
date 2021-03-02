@@ -77,7 +77,7 @@ def get_url(
 
 
 def cache_page_filepath(kode: str, doc: str, page: int) -> str:
-    base_folder = os.path.join(kode)
+    base_folder = os.path.join(DEFAULT_DIR, kode)
     Path(base_folder).mkdir(parents=True, exist_ok=True)
     return os.path.join(base_folder, f"{doc}-{page}.json")
 

@@ -91,9 +91,7 @@ class Modul(Mapping[int, Page]):
             raise KeyError("key melebihi halaman maksimal")
         page_data = get_cached_page(self.subfolder, self.doc, page)
         if page_data:
-            page_obj = Page(**page_data)  # type: ignore[call-arg]
-            self.cache[page] = page_obj
-            return page_obj
+            return Page(**page_data)  # type: ignore[call-arg]
         params = self.__make_params__(page)
         headers = {"Referer": self.base + "?" + urlencode({"modul": self.subfolder})}
         res = get_url(

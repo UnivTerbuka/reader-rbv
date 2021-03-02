@@ -89,3 +89,12 @@ def cache_page(page: "Page", kode: str, doc: str):
         json_data = attr.asdict(page)
         with open(filepath, "w") as fp:
             json.dump(json_data, fp)
+
+
+def get_cached_page(kode: str, doc: str, page: int) -> Optional[dict]:
+    filepath = cache_page_filepath(kode, doc, page)
+    if not os.path.isfile(filepath):
+        return None
+    with open(filepath, "r") as fp:
+        json_dict = json.load(fp)
+    return json_dict

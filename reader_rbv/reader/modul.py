@@ -1,11 +1,11 @@
-from cachetools import TTLCache, cachedmethod
+from cachetools import cachedmethod
 from operator import attrgetter
 from requests import Session
 from typing import List, Mapping, MutableMapping, Optional
 from urllib.parse import urlencode
 
-from . import Page
-from .utils import get_url
+from . import Page, PageCache
+from .utils import get_url, get_cached_page
 
 
 def clean_doc(doc: str) -> str:
@@ -32,7 +32,12 @@ class Modul(Mapping[int, Page]):
         self.base = base
         self.url = url
         self.session = session
-        self.cache: MutableMapping[int, Page] = TTLCache(50, 600)
+        self.cache: MutableMapping[int, Page] = PageCache(
+            kode=subfolder,
+            doc=doc,
+            maxsize=50,
+            ttl=600,
+        )
         self._max_page = max_page
         self.__username__ = username
         self.__password__ = password
@@ -84,6 +89,11 @@ class Modul(Mapping[int, Page]):
             raise KeyError("key harus > 0")
         elif self.max_page and page > self.max_page:
             raise KeyError("key melebihi halaman maksimal")
+        page_data = get_cached_page(self.subfolder, self.doc, page)
+        if page_data:
+            page_obj = Page(**page_data)  # type: ignore[call-arg]
+            self.cache[page] = page_obj
+            return page_obj
         params = self.__make_params__(page)
         headers = {"Referer": self.base + "?" + urlencode({"modul": self.subfolder})}
         res = get_url(

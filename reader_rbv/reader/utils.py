@@ -112,3 +112,12 @@ def cache_buku(buku: "Buku"):
     buku_data = buku.asdict()
     with open(filepath, "w") as fp:
         json.dump(buku_data, fp)
+
+
+def get_cached_buku(kode: str) -> Optional[dict]:
+    filepath = cache_buku_filepath(kode)
+    if not os.path.isfile(filepath):
+        return None
+    with open(filepath, "r") as fp:
+        json_dict = json.load(fp)
+    return json_dict

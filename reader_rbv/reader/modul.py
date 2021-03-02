@@ -66,9 +66,9 @@ class Modul(Mapping[int, Page]):
 
     @max_page.setter
     def max_page(self, value: int):
-        if isinstance(value, int):
-            self._max_page = value
-        raise ValueError("max_page harus int")
+        if not isinstance(value, int):
+            raise ValueError("max_page harus int")
+        self._max_page = value
 
     def fetch(self) -> None:
         page1 = self.get_page(1)

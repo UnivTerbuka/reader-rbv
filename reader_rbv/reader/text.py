@@ -4,12 +4,12 @@ from typing import List
 
 @attr.dataclass(slots=True)
 class Text:
-    height: int
-    hLines: int
-    vline: int
-    fills: int
-    font: int
-    text: str
+    height: int = attr.ib(order=True)
+    hLines: int = attr.ib(order=True)
+    vline: int = attr.ib(order=False)
+    fills: int = attr.ib(order=False)
+    font: int = attr.ib(order=False)
+    text: str = attr.ib(order=False)
 
     @classmethod
     def from_data(cls, data: list) -> "Text":

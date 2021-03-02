@@ -39,7 +39,7 @@ class Page:
             return "Halaman kosong / Tidak ditemukan. :("
         now = 0
         out = ""
-        for text in self.text:
+        for text in sorted(self.text):
             if text.height != now:
                 out += "\n"
                 now = text.height

@@ -1,12 +1,12 @@
 import logging
 
-from cachetools import TTLCache, cachedmethod
+from cachetools import cachedmethod
 from operator import attrgetter
 from requests import Session
 from typing import MutableMapping
 
 from reader_rbv.exception import BookNotFound
-from . import Buku
+from . import Buku, BukuCache
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0"
@@ -25,7 +25,7 @@ class Reader:
         self.password = password
         self.session = session
         self.base = base
-        self.cache: MutableMapping[str, Buku] = TTLCache(10, 600)
+        self.cache: MutableMapping[str, Buku] = BukuCache(10, 600)
         self.logger = logging.getLogger(f"Reader:{username}")
         self.session.headers.update(HEADERS)
 

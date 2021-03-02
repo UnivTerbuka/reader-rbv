@@ -11,6 +11,7 @@ from typing import Dict, Optional, Union, TYPE_CHECKING
 from reader_rbv.exception import InvalidCredential, Unreachable
 
 if TYPE_CHECKING:
+    from . import Buku
     from . import Page
 
 logger = logging.getLogger(__name__)
@@ -81,6 +82,10 @@ def cache_page_filepath(kode: str, doc: str, page: int) -> str:
     return os.path.join(base_folder, f"{doc}-{page}.json")
 
 
+def cache_buku_filepath(kode: str, ext: str = ".json") -> str:
+    return os.path.join(DEFAULT_DIR, kode + ext)
+
+
 def cache_page(page: "Page", kode: str, doc: str):
     filepath = cache_page_filepath(kode, doc, page.number)
     if os.path.isfile(filepath):
@@ -98,3 +103,12 @@ def get_cached_page(kode: str, doc: str, page: int) -> Optional[dict]:
     with open(filepath, "r") as fp:
         json_dict = json.load(fp)
     return json_dict
+
+
+def cache_buku(buku: "Buku"):
+    filepath = cache_buku_filepath(buku.kode)
+    if os.path.isfile(filepath):
+        logger.debug(f"File cache buku {filepath} sudah ada, dilewati...")
+    buku_data = buku.asdict()
+    with open(filepath, "w") as fp:
+        json.dump(buku_data, fp)

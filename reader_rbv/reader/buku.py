@@ -2,7 +2,7 @@ import logging
 
 from bs4 import BeautifulSoup, Tag
 from requests import Session
-from typing import Dict, Optional, Mapping
+from typing import Any, Dict, Optional, Mapping
 
 from . import Modul
 from .utils import get_url
@@ -73,3 +73,9 @@ class Buku(Mapping[str, Modul]):
                 session=self.session,
             )
             self.logger.debug(f"Dapat submodul {doc}")
+
+    def asdict(self) -> Dict[str, Any]:
+        return {
+            "kode": self.kode,
+            "moduls": [modul.asdict() for key, modul in self.moduls.items()],
+        }

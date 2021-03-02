@@ -1,7 +1,7 @@
 from cachetools import cachedmethod
 from operator import attrgetter
 from requests import Session
-from typing import List, Mapping, MutableMapping, Optional
+from typing import Any, Dict, List, Mapping, MutableMapping, Optional
 from urllib.parse import urlencode
 
 from . import Page, PageCache
@@ -115,4 +115,12 @@ class Modul(Mapping[int, Page]):
             "format": format_,
             "subfolder": self.subfolder + "/",
             "page": (page // 10 + 1) * 10,
+        }
+
+    def asdict(self) -> Dict[str, Any]:
+        return {
+            "nama": self.nama,
+            "subfolder": self.subfolder,
+            "doc": self.doc,
+            "max_page": self.max_page,
         }

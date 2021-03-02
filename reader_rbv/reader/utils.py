@@ -17,9 +17,10 @@ logger = logging.getLogger(__name__)
 
 
 def get_default_dir() -> str:
+    # Thank you pre-commit
     ret = os.environ.get("READER_RBV_HOME") or os.path.join(
         os.environ.get("XDG_CACHE_HOME") or os.path.expanduser("~/.cache"),
-        "pre-commit",
+        "reader-rbv",
     )
     return os.path.realpath(ret)
 
@@ -83,7 +84,8 @@ def cache_page_filepath(kode: str, doc: str, page: int) -> str:
 def cache_page(page: "Page", kode: str, doc: str):
     filepath = cache_page_filepath(kode, doc, page.number)
     if os.path.isfile(filepath):
-        pass
-    json_data = attr.asdict(page)
-    with open(filepath, "w") as fp:
-        json.dump(json_data, fp)
+        logger.debug(f"File cache {filepath} sudah ada, dilewati...")
+    else:
+        json_data = attr.asdict(page)
+        with open(filepath, "w") as fp:
+            json.dump(json_data, fp)

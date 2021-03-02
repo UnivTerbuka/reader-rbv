@@ -1,4 +1,4 @@
-from cachetools import LRUCache, cachedmethod
+from cachetools import TTLCache, cachedmethod
 from operator import attrgetter
 from requests import Session
 from typing import List, Mapping, MutableMapping, Optional
@@ -32,7 +32,7 @@ class Modul(Mapping[int, Page]):
         self.base = base
         self.url = url
         self.session = session
-        self.cache: MutableMapping[int, Page] = LRUCache(100)
+        self.cache: MutableMapping[int, Page] = TTLCache(50, 600)
         self._max_page = max_page
         self.__username__ = username
         self.__password__ = password

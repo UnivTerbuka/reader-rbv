@@ -123,4 +123,22 @@ class Modul(Mapping[int, Page]):
             "subfolder": self.subfolder,
             "doc": self.doc,
             "max_page": self.max_page,
+            "url": self.url,
         }
+
+    @classmethod
+    def from_dict(
+        cls,
+        data: Dict[str, Any],
+        base: str,
+        username: str,
+        password: str,
+        session: Session,
+    ) -> "Modul":
+        return cls(
+            base=base,
+            username=username,
+            password=password,
+            session=session,
+            **data,
+        )

@@ -62,7 +62,7 @@ class Buku(Mapping[str, Modul]):
                 continue
             url = a["href"]
             doc = parse_doc(url)
-            self.moduls[doc] = Modul(
+            modul = Modul(
                 nama=a.getText(),
                 subfolder=self.kode,
                 doc=doc,
@@ -72,6 +72,7 @@ class Buku(Mapping[str, Modul]):
                 password=self.password,
                 session=self.session,
             )
+            self.moduls[modul.doc] = modul
             self.logger.debug(f"Dapat submodul {doc}")
 
     def asdict(self) -> Dict[str, Any]:
@@ -79,3 +80,30 @@ class Buku(Mapping[str, Modul]):
             "kode": self.kode,
             "moduls": [modul.asdict() for key, modul in self.moduls.items()],
         }
+
+    @classmethod
+    def from_dict(
+        cls,
+        data: Dict[str, Any],
+        base: str,
+        session: Session,
+        username: str,
+        password: str,
+    ):
+        moduls: Dict[str, Modul] = dict()
+        for md in data["moduls"]:
+            moduls[md["doc"]] = Modul.from_dict(
+                data=md,
+                base=base,
+                username=username,
+                password=password,
+                session=session,
+            )
+        return cls(
+            kode=data["kode"],
+            base=base,
+            session=session,
+            username=username,
+            password=password,
+            moduls=moduls,
+        )

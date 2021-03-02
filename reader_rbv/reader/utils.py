@@ -1,8 +1,27 @@
+import attr
+import os
+import ujson as json
+
 from bs4 import BeautifulSoup, Tag
+from pathlib import Path
 from requests import Response, Session
-from typing import Dict, Optional, Union
+from typing import Dict, Optional, Union, TYPE_CHECKING
 
 from reader_rbv.exception import InvalidCredential, Unreachable
+
+if TYPE_CHECKING:
+    from . import Page
+
+
+def get_default_dir() -> str:
+    ret = os.environ.get("READER_RBV_HOME") or os.path.join(
+        os.environ.get("XDG_CACHE_HOME") or os.path.expanduser("~/.cache"),
+        "pre-commit",
+    )
+    return os.path.realpath(ret)
+
+
+DEFAULT_DIR = get_default_dir()
 
 
 def get_captcha(form: Tag) -> str:
@@ -30,7 +49,7 @@ def get_url(
     username: str,
     password: str,
     params: Optional[Dict[str, str]] = None,
-    headers: Optional[Dict[str, str]] = None
+    headers: Optional[Dict[str, str]] = None,
 ) -> Response:
     res = session.get(url, params=params, headers=headers)
     if not res.ok:
@@ -50,3 +69,16 @@ def get_url(
     if not res.ok:
         raise InvalidCredential("Username / password salah")
     return res
+
+
+def cache_page_filepath(kode: str, doc: str, page: int) -> str:
+    base_folder = os.path.join(kode)
+    Path(base_folder).mkdir(parents=True, exist_ok=True)
+    return os.path.join(base_folder, f"{doc}-{page}.json")
+
+
+def cache_page(page: "Page", kode: str, doc: str):
+    filepath = cache_page_filepath(kode, doc, page.number)
+    json_data = attr.asdict(page)
+    with open(filepath, "w") as fp:
+        json.dump(json_data, fp)

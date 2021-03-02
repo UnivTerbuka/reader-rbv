@@ -3,12 +3,12 @@ name: Tests
 on:
   pull_request:
     branches:
-      - master
+      - main
   schedule:
     - cron: 7 3 * * *
   push:
     branches:
-      - master
+      - main
     tags:
       - "v*.*.*"
 

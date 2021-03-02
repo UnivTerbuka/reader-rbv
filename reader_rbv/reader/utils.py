@@ -1,4 +1,5 @@
 import attr
+import logging
 import os
 import ujson as json
 
@@ -11,6 +12,8 @@ from reader_rbv.exception import InvalidCredential, Unreachable
 
 if TYPE_CHECKING:
     from . import Page
+
+logger = logging.getLogger(__name__)
 
 
 def get_default_dir() -> str:
@@ -79,6 +82,8 @@ def cache_page_filepath(kode: str, doc: str, page: int) -> str:
 
 def cache_page(page: "Page", kode: str, doc: str):
     filepath = cache_page_filepath(kode, doc, page.number)
+    if os.path.isfile(filepath):
+        pass
     json_data = attr.asdict(page)
     with open(filepath, "w") as fp:
         json.dump(json_data, fp)

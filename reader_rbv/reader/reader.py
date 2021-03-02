@@ -7,6 +7,7 @@ from typing import MutableMapping
 
 from reader_rbv.exception import BookNotFound
 from . import Buku, BukuCache
+from .utils import get_cached_buku
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0"
@@ -31,6 +32,15 @@ class Reader:
 
     @cachedmethod(attrgetter("cache"))
     def get(self, kode: str) -> Buku:
+        buku_data = get_cached_buku(kode)
+        if buku_data:
+            return Buku.from_dict(
+                data=buku_data,
+                base=self.base,
+                session=self.session,
+                username=self.username,
+                password=self.password,
+            )
         params = {"modul": kode}
         self.logger.debug(f"Mencari ketersediaan buku {kode}")
         res = self.session.get(self.base, params=params)

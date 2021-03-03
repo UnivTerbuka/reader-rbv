@@ -34,9 +34,11 @@ class Buku(Mapping[str, Modul]):
         else:
             self.moduls = dict()
         if not self.moduls:
+            self.logger.debug("Submodul kosong, mengambil data dari RBV")
             self.fetch()
 
     def __getitem__(self, key: str):
+        self.logger.debug(f"Mengambil submodul {key}")
         return self.moduls[key]
 
     def __iter__(self):
@@ -73,7 +75,8 @@ class Buku(Mapping[str, Modul]):
                 session=self.session,
             )
             self.moduls[modul.doc] = modul
-            self.logger.debug(f"Dapat submodul {doc}")
+            self.logger.debug(f"Dapat submodul {modul}")
+        self.logger.debug(f"Berhasil mendapat submodul sebanyak {len(self.moduls)}")
 
     def asdict(self) -> Dict[str, Any]:
         return {

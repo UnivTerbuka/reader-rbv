@@ -8,7 +8,7 @@ from pathlib import Path
 from requests import Response, Session
 from typing import Dict, Optional, Union, TYPE_CHECKING
 
-from reader_rbv.exception import InvalidCredential, Unreachable
+from reader_rbv.exception import InvalidCredential, Unreachable, BookNotFound
 
 if TYPE_CHECKING:
     from . import Buku
@@ -59,6 +59,8 @@ def get_url(
     res = session.get(url, params=params, headers=headers)
     if not res.ok:
         raise Unreachable("RBV tidak dapat dihubungi")
+    elif not res.text:
+        raise BookNotFound("Buku / halaman tidak ditemukan di RBV")
     elif "Login" not in res.text:
         return res
     soup = BeautifulSoup(res.text, "html.parser")

@@ -18,7 +18,7 @@ class Buku(Mapping[str, Modul]):
         password: str,
         moduls: Optional[Dict[str, Modul]] = None,
     ):
-        self.logger = logging.getLogger(f"Buku:{kode}")
+        self.logger = logging.getLogger(self.__class__.__qualname__)
         self.kode = kode
         self.base = base
         self.session = session
@@ -29,11 +29,11 @@ class Buku(Mapping[str, Modul]):
         else:
             self.moduls = dict()
         if not self.moduls:
-            self.logger.debug("Submodul kosong, mengambil data dari RBV")
+            self.logger.debug(f"{self.kode} Submodul kosong, mengambil data dari RBV")
             self.fetch()
 
     def __getitem__(self, key: str):
-        self.logger.debug(f"Mengambil submodul {key}")
+        self.logger.debug(f"{self.kode} Mengambil submodul {key}")
         return self.moduls[key]
 
     def __iter__(self):
@@ -51,7 +51,7 @@ class Buku(Mapping[str, Modul]):
             username=self.username,
             password=self.password,
         )
-        self.logger.debug("Mencari submodul")
+        self.logger.debug(f"{self.kode} Mendapatkan semua submodul")
         soup = BeautifulSoup(res.text, "html.parser")
         for th in soup.findAll("th"):
             a: Tag = th.find("a")
@@ -70,8 +70,8 @@ class Buku(Mapping[str, Modul]):
                 session=self.session,
             )
             self.moduls[modul.doc] = modul
-            self.logger.debug(f"Dapat submodul {modul}")
-        self.logger.debug(f"Berhasil mendapat submodul sebanyak {len(self.moduls)}")
+            self.logger.debug(f"{self.kode} Dapat submodul {modul}")
+        self.logger.debug(f"{self.kode} Berhasil mendapat submodul {len(self.moduls)}")
 
     def asdict(self) -> Dict[str, Any]:
         return {

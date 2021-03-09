@@ -43,6 +43,10 @@ jobs:
           pip install poetry
           poetry install
       - name: Run tests
+        env:
+          USERNAME_RBV: ${{ secrets.USERNAME_RBV }}
+          PASSWORD_RBV: ${{ secrets.PASSWORD_RBV }}
+          URL_RBV: ${{ secrets.URL_RBV }}
         run: |
           poetry run pytest --ignore="tests/test_local" --cov=./ --cov-report=xml
       - name: Upload coverage

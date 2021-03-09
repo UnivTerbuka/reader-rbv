@@ -89,7 +89,7 @@ class Buku(Mapping[str, Modul]):
         password: str,
     ):
         moduls = moduls_from_json(
-            moduls=data,
+            moduls=data["moduls"],
             m=Modul,
             base=base,
             username=username,

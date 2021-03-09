@@ -3,7 +3,7 @@ import logging
 from cachetools import cachedmethod
 from operator import attrgetter
 from requests import Session
-from typing import MutableMapping
+from typing import Mapping, MutableMapping
 
 from reader_rbv.exception import BookNotFound
 from . import Buku, BukuCache
@@ -11,7 +11,7 @@ from .constants import HEADERS
 from .utils import get_cached_buku
 
 
-class Reader:
+class Reader(Mapping[str, Buku]):
     def __init__(
         self,
         username: str,
@@ -28,7 +28,7 @@ class Reader:
         self.session.headers.update(HEADERS)
 
     @cachedmethod(attrgetter("cache"))
-    def get(self, kode: str) -> Buku:
+    def get_buku(self, kode: str) -> Buku:
         buku_data = get_cached_buku(kode)
         if buku_data:
             return Buku.from_dict(
@@ -53,3 +53,12 @@ class Reader:
             username=self.username,
             password=self.password,
         )
+
+    def __getitem__(self, key: str) -> Buku:
+        return self.get_buku(key)
+
+    def __len__(self):
+        return len(self.cache)
+
+    def __iter__(self):
+        return iter(self.cache)

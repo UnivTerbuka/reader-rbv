@@ -6,3 +6,15 @@
 [![Code Style - Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 SDK / Client python untuk Ruang Baca Virtual.
+
+## Install
+
+Install dengan [python](https://www.python.org/)
+
+```bash
+pip install --upgrade reader-rbv
+```
+
+## Legal / Hukum
+
+Kode ini sama sekali tidak berafiliasi dengan, diizinkan, dipelihara, disponsori atau didukung oleh [Universitas Terbuka](https://ut.ac.id/) atau afiliasi atau anak organisasinya. Ini adalah perangkat lunak yang independen dan tidak resmi. Gunakan dengan risiko Anda sendiri.

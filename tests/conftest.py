@@ -3,7 +3,7 @@ import os
 from pytest import fixture
 from dotenv import load_dotenv
 
-from reader_rbv import Reader, BukuCache
+from reader_rbv import Reader
 
 load_dotenv()
 
@@ -28,6 +28,6 @@ def reader(username: str, password: str, base_url: str) -> Reader:
     return Reader(
         username=username,
         password=password,
-        cache=BukuCache(0, 600),
+        cache=None,
         base=base_url,
     )

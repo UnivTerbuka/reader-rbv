@@ -3,7 +3,7 @@ import logging
 from cachetools import cachedmethod
 from operator import attrgetter
 from requests import Session
-from typing import Mapping, MutableMapping
+from typing import Mapping, MutableMapping, Optional
 
 from reader_rbv.exception import BookNotFound
 from . import Buku, BukuCache
@@ -16,7 +16,7 @@ class Reader(Mapping[str, Buku]):
         self,
         username: str,
         password: str,
-        cache: MutableMapping[str, Buku] = BukuCache(10, 600),
+        cache: Optional[MutableMapping[str, Buku]] = BukuCache(10, 600),
         base: str = "http://www.pustaka.ut.ac.id/reader/",
         session: Session = Session(),
     ):

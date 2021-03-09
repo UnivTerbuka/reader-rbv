@@ -5,7 +5,7 @@ from requests import Session
 from typing import Any, Dict, Optional, Mapping
 
 from . import Modul
-from .utils import get_url, parse_doc
+from .utils import get_url, parse_doc, moduls_to_json, moduls_from_json
 
 
 class Buku(Mapping[str, Modul]):
@@ -76,7 +76,7 @@ class Buku(Mapping[str, Modul]):
     def asdict(self) -> Dict[str, Any]:
         return {
             "kode": self.kode,
-            "moduls": [modul.asdict() for key, modul in self.moduls.items()],
+            "moduls": moduls_to_json(self.moduls),
         }
 
     @classmethod
@@ -88,15 +88,14 @@ class Buku(Mapping[str, Modul]):
         username: str,
         password: str,
     ):
-        moduls: Dict[str, Modul] = dict()
-        for md in data["moduls"]:
-            moduls[md["doc"]] = Modul.from_dict(
-                data=md,
-                base=base,
-                username=username,
-                password=password,
-                session=session,
-            )
+        moduls = moduls_from_json(
+            moduls=data,
+            m=Modul,
+            base=base,
+            username=username,
+            password=password,
+            session=session,
+        )
         return cls(
             kode=data["kode"],
             base=base,

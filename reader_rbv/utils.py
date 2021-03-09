@@ -6,12 +6,13 @@ import ujson as json
 from bs4 import BeautifulSoup, Tag
 from pathlib import Path
 from requests import Response, Session
-from typing import Dict, Optional, Union, TYPE_CHECKING
+from typing import Dict, Optional, Type, Union, TYPE_CHECKING
 
 from reader_rbv.exception import InvalidCredential, Unreachable, BookNotFound
 
 if TYPE_CHECKING:
     from . import Buku
+    from . import Modul
     from . import Page
 
 logger = logging.getLogger(__name__)
@@ -25,6 +26,33 @@ def clean_doc(doc: str, rstrip: str = ".pdf") -> str:
 def parse_doc(href: str, strip: str = ".pdf") -> str:
     # index.php?subfolder=MSIM4103/&doc=DAFIS.pdf -> DAFIS
     return href.split("=")[-1].strip(strip)
+
+
+def moduls_from_json(
+    moduls: Dict[str, Dict],
+    m: Type["Modul"],
+    base: str,
+    username: str,
+    password: str,
+    session: Session,
+) -> Dict[str, "Modul"]:
+    results: Dict[str, "Modul"] = dict()
+    for key, modul in moduls.items():
+        results[key] = m.from_dict(
+            data=modul,
+            base=base,
+            username=username,
+            password=password,
+            session=session,
+        )
+    return results
+
+
+def moduls_to_json(moduls: Dict[str, "Modul"]) -> Dict[str, Dict]:
+    results: Dict[str, Dict] = dict()
+    for key, modul in moduls.items():
+        results[key] = modul.asdict()
+    return results
 
 
 def get_default_dir() -> str:

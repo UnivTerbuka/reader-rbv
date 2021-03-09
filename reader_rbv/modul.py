@@ -36,7 +36,7 @@ class Modul(Mapping[int, Page]):
         self._max_page = max_page
         self.__username__ = username
         self.__password__ = password
-        if not self.max_page:
+        if self.max_page is None:
             self.fetch()
 
     def __str__(self):

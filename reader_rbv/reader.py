@@ -23,8 +23,8 @@ class Reader:
         self.password = password
         self.session = session
         self.base = base
+        self.logger = logging.getLogger(self.__class__.__qualname__)
         self.cache: MutableMapping[str, Buku] = BukuCache(10, 600)
-        self.logger = logging.getLogger(f"Reader:{username}")
         self.session.headers.update(HEADERS)
 
     @cachedmethod(attrgetter("cache"))

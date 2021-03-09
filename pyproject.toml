@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "reader-rbv"
-version = "0.2.0"
+version = "0.3.0"
 description = "SDK / Client python untuk Ruang Baca Virtual Universitas Terbuka."
 authors = ["hexatester <habibrohman@protonmail.com>"]
 license = "AGPLv3"

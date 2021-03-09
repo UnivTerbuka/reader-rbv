@@ -17,6 +17,16 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+def clean_doc(doc: str, rstrip: str = ".pdf") -> str:
+    # DAFIS.pdf -> DAFIS
+    return doc.rstrip(rstrip)
+
+
+def parse_doc(href: str, strip: str = ".pdf") -> str:
+    # index.php?subfolder=MSIM4103/&doc=DAFIS.pdf -> DAFIS
+    return href.split("=")[-1].strip(strip)
+
+
 def get_default_dir() -> str:
     # Thank you pre-commit
     ret = os.environ.get("READER_RBV_HOME") or os.path.join(

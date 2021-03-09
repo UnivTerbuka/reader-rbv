@@ -5,12 +5,7 @@ from requests import Session
 from typing import Any, Dict, Optional, Mapping
 
 from . import Modul
-from .utils import get_url
-
-
-def parse_doc(href: str) -> str:
-    # index.php?subfolder=MSIM4103/&doc=DAFIS.pdf
-    return href.split("=")[-1]
+from .utils import get_url, parse_doc
 
 
 class Buku(Mapping[str, Modul]):

@@ -5,12 +5,7 @@ from typing import Any, Dict, List, Mapping, MutableMapping, Optional
 from urllib.parse import urlencode
 
 from . import Page, PageCache
-from .utils import get_url, get_cached_page
-
-
-def clean_doc(doc: str) -> str:
-    # DAFIS.pdf -> DAFIS
-    return doc.rstrip(".pdf")
+from .utils import get_url, get_cached_page, clean_doc
 
 
 class Modul(Mapping[int, Page]):

@@ -16,6 +16,7 @@ class Reader(Mapping[str, Buku]):
         self,
         username: str,
         password: str,
+        cache: MutableMapping[str, Buku] = BukuCache(10, 600),
         base: str = "http://www.pustaka.ut.ac.id/reader/",
         session: Session = Session(),
     ):
@@ -24,7 +25,7 @@ class Reader(Mapping[str, Buku]):
         self.session = session
         self.base = base
         self.logger = logging.getLogger(self.__class__.__qualname__)
-        self.cache: MutableMapping[str, Buku] = BukuCache(10, 600)
+        self.cache = cache
         self.session.headers.update(HEADERS)
 
     @cachedmethod(attrgetter("cache"))

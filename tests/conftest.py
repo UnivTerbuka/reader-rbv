@@ -9,15 +9,15 @@ load_dotenv()
 
 
 @fixture
-def username(self) -> str:
+def username() -> str:
     return os.environ.get("USERNAME_RBV", "")
 
 
 @fixture
-def password(self) -> str:
+def password() -> str:
     return os.environ.get("PASSWORD_RBV", "")
 
 
 @fixture
-def reader(self, username: str, password: str) -> Reader:
+def reader(username: str, password: str) -> Reader:
     return Reader(username, password)

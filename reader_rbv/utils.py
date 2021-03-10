@@ -66,9 +66,6 @@ def make_dir(path: str):
     Path(path).mkdir(parents=True, exist_ok=True)
 
 
-DEFAULT_DIR = get_default_dir()
-
-
 def get_captcha(form: Tag) -> str:
     c: Union[str, int, float] = ""
     ccaptcha: Tag = form.find("input", {"name": "ccaptcha"})

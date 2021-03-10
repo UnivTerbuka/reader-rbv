@@ -1,5 +1,6 @@
 from .font import Font
 from .text import Text
+from .image import Image
 from .page import Page
 from .page_cache import PageCache
 from .book_section import BookSection
@@ -15,6 +16,7 @@ __author__ = "hexatester <habibrohman@protonmail.com>"
 __all__ = [
     "Font",
     "Text",
+    "Image",
     "Page",
     "PageCache",
     "BookSection",

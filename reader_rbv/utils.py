@@ -93,8 +93,10 @@ def get_url(
     password: str,
     params: Optional[Dict[str, str]] = None,
     headers: Optional[Dict[str, str]] = None,
+    *args,
+    **kwargs,
 ) -> Response:
-    res = session.get(url, params=params, headers=headers)
+    res = session.get(url, params=params, headers=headers, *args, **kwargs)
     if not res.ok:
         raise Unreachable("RBV tidak dapat dihubungi")
     elif not res.text:

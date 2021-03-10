@@ -33,11 +33,12 @@ class BookSection(Mapping[int, Page]):
             maxsize=50,
             ttl=600,
         )
-        self._max_page = max_page
         self.__username__ = username
         self.__password__ = password
-        if self.max_page is None:
-            self.fetch()
+        if max_page is None:
+            self._max_page = self.get_max_page()
+        else:
+            self._max_page = max_page
 
     def __str__(self):
         return self.nama
@@ -61,18 +62,12 @@ class BookSection(Mapping[int, Page]):
         return self.max_page
 
     @property
-    def max_page(self) -> Optional[int]:
+    def max_page(self) -> int:
         return self._max_page
 
-    @max_page.setter
-    def max_page(self, value: int):
-        if not isinstance(value, int):
-            raise ValueError("max_page harus int")
-        self._max_page = value
-
-    def fetch(self) -> None:
+    def get_max_page(self) -> int:
         page1 = self.get_page(1)
-        self.max_page = page1.pages
+        return page1.pages
 
     @cachedmethod(attrgetter("cache"))
     def get_page(self, page: int) -> Page:

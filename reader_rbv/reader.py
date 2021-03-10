@@ -31,8 +31,8 @@ class Reader(Mapping[str, Book]):
         self.session.headers.update(HEADERS)
 
     @cachedmethod(attrgetter("cache"))
-    def get_buku(self, kode: str) -> Book:
-        buku_data = get_cached_buku(kode)
+    def get_buku(self, code: str) -> Book:
+        buku_data = get_cached_buku(code)
         if self.cache is not None and buku_data:
             return Book.from_dict(
                 data=buku_data,
@@ -41,15 +41,15 @@ class Reader(Mapping[str, Book]):
                 username=self.username,
                 password=self.password,
             )
-        params = {"modul": kode}
-        self.logger.debug(f"Finding book with code = {kode}")
+        params = {"modul": code}
+        self.logger.debug(f"Finding book with code = {code}")
         res = self.session.get(self.base, params=params)
         if not res.ok or not res.text:
-            raise BookNotFound(f"Unable to find book with code = {kode}")
+            raise BookNotFound(f"Unable to find book with code = {code}")
         else:
-            self.logger.debug(f"Found book with code = {kode}")
+            self.logger.debug(f"Found book with code = {code}")
         return Book(
-            kode=kode,
+            code=code,
             base=self.base,
             session=self.session,
             username=self.username,

@@ -28,7 +28,7 @@ class BookSection(Mapping[int, Page]):
         self.url = url
         self.session = session
         self.cache: MutableMapping[int, Page] = PageCache(
-            kode=subfolder,
+            code=subfolder,
             doc=doc,
             maxsize=50,
             ttl=600,

@@ -1,39 +1,33 @@
+import attr
 import logging
 
 from bs4 import BeautifulSoup, Tag
 from requests import Session
-from typing import Any, Dict, Optional, Mapping
+from typing import Any, Dict, Mapping
 
 from . import BookSection
 from .utils import get_url, parse_doc, sections_to_json, sections_from_json
 
 
+logger = logging.getLogger(__name__)
+
+
+@attr.dataclass(slots=True)
 class Book(Mapping[str, BookSection]):
-    def __init__(
-        self,
-        kode: str,
-        base: str,
-        session: Session,
-        username: str,
-        password: str,
-        sections: Optional[Dict[str, BookSection]] = None,
-    ):
-        self.logger = logging.getLogger(self.__class__.__qualname__)
-        self.kode = kode
-        self.base = base
-        self.session = session
-        self.username = username
-        self.password = password
-        if sections:
-            self.sections = sections
-        else:
-            self.sections = dict()
+    code: str
+    base: str
+    username: str
+    password: str
+    session: Session = attr.ib(factory=Session)
+    sections: Dict[str, BookSection] = attr.ib(factory=dict)
+
+    def __attrs_post_init__(self) -> None:
         if not self.sections:
-            self.logger.debug(f"{self.kode} Section is empty, gettig from the server")
+            logger.debug(f"{self.code} Section is empty, gettig from the server")
             self.fetch()
 
     def __getitem__(self, key: str):
-        self.logger.debug(f"{self.kode} Getting section {key}")
+        logger.debug(f"{self.code} Getting section {key}")
         return self.sections[key]
 
     def __iter__(self):
@@ -43,7 +37,7 @@ class Book(Mapping[str, BookSection]):
         return len(self.sections)
 
     def fetch(self):
-        params = {"modul": self.kode}
+        params = {"modul": self.code}
         res = get_url(
             session=self.session,
             url=self.base,
@@ -51,7 +45,7 @@ class Book(Mapping[str, BookSection]):
             username=self.username,
             password=self.password,
         )
-        self.logger.debug(f"{self.kode} Getting all sections")
+        logger.debug(f"{self.code} Getting all sections")
         soup = BeautifulSoup(res.text, "html.parser")
         for th in soup.findAll("th"):
             a: Tag = th.find("a")
@@ -61,7 +55,7 @@ class Book(Mapping[str, BookSection]):
             doc = parse_doc(url)
             modul = BookSection(
                 nama=a.getText(),
-                subfolder=self.kode,
+                subfolder=self.code,
                 doc=doc,
                 base=self.base,
                 url=url,
@@ -70,14 +64,12 @@ class Book(Mapping[str, BookSection]):
                 session=self.session,
             )
             self.sections[modul.doc] = modul
-            self.logger.debug(f"{self.kode} Got section {modul}")
-        self.logger.debug(
-            f"{self.kode} Successfully fetch {len(self.sections)} sections"
-        )
+            logger.debug(f"{self.code} Got section {modul}")
+        logger.debug(f"{self.code} Successfully fetch {len(self.sections)} sections")
 
     def asdict(self) -> Dict[str, Any]:
         return {
-            "kode": self.kode,
+            "code": self.code,
             "sections": sections_to_json(self.sections),
         }
 
@@ -99,7 +91,7 @@ class Book(Mapping[str, BookSection]):
             session=session,
         )
         return cls(
-            kode=data["kode"],
+            code=data["code"],
             base=base,
             session=session,
             username=username,

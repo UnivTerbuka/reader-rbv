@@ -116,18 +116,18 @@ def get_url(
     return res
 
 
-def cache_page_filepath(kode: str, doc: str, page: int) -> str:
-    base_folder = os.path.join(DEFAULT_DIR, kode)
+def cache_page_filepath(code: str, doc: str, page: int) -> str:
+    base_folder = os.path.join(DEFAULT_DIR, code)
     Path(base_folder).mkdir(parents=True, exist_ok=True)
     return os.path.join(base_folder, f"{doc}-{page}.json")
 
 
-def cache_buku_filepath(kode: str, ext: str = ".json") -> str:
-    return os.path.join(DEFAULT_DIR, kode + ext)
+def cache_buku_filepath(code: str, ext: str = ".json") -> str:
+    return os.path.join(DEFAULT_DIR, code + ext)
 
 
-def cache_page(page: "Page", kode: str, doc: str):
-    filepath = cache_page_filepath(kode, doc, page.number)
+def cache_page(page: "Page", code: str, doc: str):
+    filepath = cache_page_filepath(code, doc, page.number)
     if os.path.isfile(filepath):
         logger.debug(f"File cache {filepath} sudah ada, dilewati...")
     else:
@@ -136,8 +136,8 @@ def cache_page(page: "Page", kode: str, doc: str):
             json.dump(json_data, fp)
 
 
-def get_cached_page(kode: str, doc: str, page: int) -> Optional[dict]:
-    filepath = cache_page_filepath(kode, doc, page)
+def get_cached_page(code: str, doc: str, page: int) -> Optional[dict]:
+    filepath = cache_page_filepath(code, doc, page)
     if not os.path.isfile(filepath):
         return None
     with open(filepath, "r") as fp:
@@ -146,7 +146,7 @@ def get_cached_page(kode: str, doc: str, page: int) -> Optional[dict]:
 
 
 def cache_book(book: "Book"):
-    filepath = cache_buku_filepath(book.kode)
+    filepath = cache_buku_filepath(book.code)
     if os.path.isfile(filepath):
         logger.debug(f"File cache buku {filepath} sudah ada, dilewati...")
     buku_data = book.asdict()

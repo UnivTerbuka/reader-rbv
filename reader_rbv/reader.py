@@ -26,6 +26,8 @@ class Reader(Mapping[str, Book]):
         self.base = base
         self.logger = logging.getLogger(self.__class__.__qualname__)
         self.cache = cache
+        if cache is None:
+            self.logger.debug(".cache disabled")
         self.session.headers.update(HEADERS)
 
     @cachedmethod(attrgetter("cache"))
@@ -40,13 +42,12 @@ class Reader(Mapping[str, Book]):
                 password=self.password,
             )
         params = {"modul": kode}
-        self.logger.debug(f"Mencari ketersediaan buku {kode}")
+        self.logger.debug(f"Finding book with code = {kode}")
         res = self.session.get(self.base, params=params)
         if not res.ok or not res.text:
-            self.logger.warning(f"Book {kode} tidak ditemukan")
-            raise BookNotFound(f"Book dengan kode {kode} tidak ditemukan")
+            raise BookNotFound(f"Unable to find book with code = {kode}")
         else:
-            self.logger.debug(f"Book {kode} ditemukan")
+            self.logger.debug(f"Found book with code = {kode}")
         return Book(
             kode=kode,
             base=self.base,

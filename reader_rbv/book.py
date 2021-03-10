@@ -29,11 +29,11 @@ class Book(Mapping[str, BookSection]):
         else:
             self.moduls = dict()
         if not self.moduls:
-            self.logger.debug(f"{self.kode} Submodul kosong, mengambil data dari RBV")
+            self.logger.debug(f"{self.kode} Section is empty, gettig from the server")
             self.fetch()
 
     def __getitem__(self, key: str):
-        self.logger.debug(f"{self.kode} Mengambil submodul {key}")
+        self.logger.debug(f"{self.kode} Getting section {key}")
         return self.moduls[key]
 
     def __iter__(self):
@@ -51,7 +51,7 @@ class Book(Mapping[str, BookSection]):
             username=self.username,
             password=self.password,
         )
-        self.logger.debug(f"{self.kode} Mendapatkan semua submodul")
+        self.logger.debug(f"{self.kode} Getting all sections")
         soup = BeautifulSoup(res.text, "html.parser")
         for th in soup.findAll("th"):
             a: Tag = th.find("a")
@@ -70,8 +70,8 @@ class Book(Mapping[str, BookSection]):
                 session=self.session,
             )
             self.moduls[modul.doc] = modul
-            self.logger.debug(f"{self.kode} Dapat submodul {modul}")
-        self.logger.debug(f"{self.kode} Berhasil mendapat submodul {len(self.moduls)}")
+            self.logger.debug(f"{self.kode} Got section {modul}")
+        self.logger.debug(f"{self.kode} Successfully fetch {len(self.moduls)} sections")
 
     def asdict(self) -> Dict[str, Any]:
         return {

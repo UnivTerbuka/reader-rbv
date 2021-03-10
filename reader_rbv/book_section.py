@@ -81,9 +81,9 @@ class BookSection(Mapping[int, Page]):
     @cachedmethod(attrgetter("cache"))
     def get_page(self, page: int) -> Page:
         if page < 1:
-            raise KeyError("key harus > 0")
+            raise KeyError("key must be greater than 0")
         elif self.max_page and page > self.max_page:
-            raise KeyError("key melebihi halaman maksimal")
+            raise KeyError("key cant be greater than max_page")
         page_data = get_cached_page(self.subfolder, self.doc, page)
         if page_data:
             return Page(**page_data)  # type: ignore[call-arg]

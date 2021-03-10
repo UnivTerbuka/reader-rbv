@@ -36,7 +36,7 @@ class Page:
         if self.texts:
             return self.texts
         elif not self.text:
-            return "Halaman kosong / Tidak ditemukan. :("
+            return ""
         now = 0
         out = ""
         for text in sorted(self.text):

@@ -27,7 +27,7 @@ class BookSection(Mapping[int, Page]):
         self.base = base
         self.url = url
         self.session = session
-        self.cache: MutableMapping[int, Page] = PageCache(
+        self.page_cache: MutableMapping[int, Page] = PageCache(
             code=subfolder,
             doc=doc,
             maxsize=50,
@@ -74,10 +74,6 @@ class BookSection(Mapping[int, Page]):
         page1 = self.get_page(1)
         self.max_page = page1.pages
 
-    def add_cache(self, pages: List[Page]):
-        for page in pages:
-            self.cache[page.number] = page
-
     @cachedmethod(attrgetter("cache"))
     def get_page(self, page: int) -> Page:
         if page < 1:
@@ -99,8 +95,12 @@ class BookSection(Mapping[int, Page]):
         )
         jsonp = res.text[1:-1]
         pages = Page.from_jsonp(jsonp)
-        self.add_cache(pages)
-        return self.cache[page]
+        self.add_cache_pages(pages)
+        return self.page_cache[page]
+
+    def add_cache_pages(self, pages: List[Page]):
+        for page in pages:
+            self.page_cache[page.number] = page
 
     def __make_params__(self, page: int, format_: str = "jsonp") -> dict:
         return {

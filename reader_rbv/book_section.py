@@ -1,10 +1,10 @@
-from cachetools import cachedmethod
+from cachetools import cachedmethod, LRUCache
 from operator import attrgetter
 from requests import Session
 from typing import Any, Dict, List, Mapping, MutableMapping, Optional
 from urllib.parse import urlencode
 
-from . import Page, PageCache
+from . import Image, Page, PageCache
 from .utils import get_url, get_cached_page, clean_doc
 
 
@@ -33,6 +33,7 @@ class BookSection(Mapping[int, Page]):
             maxsize=50,
             ttl=600,
         )
+        self.image_cache: MutableMapping[int, Image] = LRUCache(50)
         self.__username__ = username
         self.__password__ = password
         if max_page is None:
@@ -92,6 +93,17 @@ class BookSection(Mapping[int, Page]):
         pages = Page.from_jsonp(jsonp)
         self.add_cache_pages(pages)
         return self.page_cache[page]
+
+    @cachedmethod(attrgetter("image_cache"))
+    def get_image(self, page: int) -> Image:
+        image = Image(doc=self.doc, subfolder=self.subfolder, page=page, base=self.base)
+        if not image.is_exist():
+            image.download(
+                session=self.session,
+                username=self.__username__,
+                password=self.__password__,
+            )
+        return image
 
     def add_cache_pages(self, pages: List[Page]):
         for page in pages:

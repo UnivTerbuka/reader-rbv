@@ -1,6 +1,6 @@
 import attr
 import ujson as json
-from typing import List
+from typing import List, Optional
 
 from . import Font, Text
 
@@ -13,7 +13,7 @@ class Page:
     width: int
     fonts: List[Font] = attr.ib(factory=list)
     text: List[Text] = attr.ib(factory=list, converter=Text.from_list)  # type: ignore
-    texts: str = ""
+    texts: Optional[str] = None
 
     @classmethod
     def from_jsonp(cls, jsonp: str) -> List["Page"]:
@@ -33,7 +33,7 @@ class Page:
         return results
 
     def __str__(self) -> str:
-        if self.texts:
+        if self.texts is not None:
             return self.texts
         elif not self.text:
             return ""

@@ -28,8 +28,8 @@ def parse_doc(href: str, strip: str = ".pdf") -> str:
     return href.split("=")[-1].strip(strip)
 
 
-def moduls_from_json(
-    moduls: Dict[str, Dict],
+def sections_from_json(
+    sections: Dict[str, Dict],
     m: Type["BookSection"],
     base: str,
     username: str,
@@ -37,7 +37,7 @@ def moduls_from_json(
     session: Session,
 ) -> Dict[str, "BookSection"]:
     results: Dict[str, "BookSection"] = dict()
-    for key, modul in moduls.items():
+    for key, modul in sections.items():
         results[key] = m.from_dict(
             data=modul,
             base=base,
@@ -48,9 +48,9 @@ def moduls_from_json(
     return results
 
 
-def moduls_to_json(moduls: Dict[str, "BookSection"]) -> Dict[str, Dict]:
+def sections_to_json(sections: Dict[str, "BookSection"]) -> Dict[str, Dict]:
     results: Dict[str, Dict] = dict()
-    for key, modul in moduls.items():
+    for key, modul in sections.items():
         results[key] = modul.asdict()
     return results
 
@@ -145,17 +145,17 @@ def get_cached_page(kode: str, doc: str, page: int) -> Optional[dict]:
     return json_dict
 
 
-def cache_buku(buku: "Book"):
-    filepath = cache_buku_filepath(buku.kode)
+def cache_book(book: "Book"):
+    filepath = cache_buku_filepath(book.kode)
     if os.path.isfile(filepath):
         logger.debug(f"File cache buku {filepath} sudah ada, dilewati...")
-    buku_data = buku.asdict()
+    buku_data = book.asdict()
     with open(filepath, "w") as fp:
         json.dump(buku_data, fp)
 
 
-def get_cached_buku(kode: str) -> Optional[dict]:
-    filepath = cache_buku_filepath(kode)
+def get_cached_buku(code: str) -> Optional[dict]:
+    filepath = cache_buku_filepath(code)
     if not os.path.isfile(filepath):
         return None
     with open(filepath, "r") as fp:

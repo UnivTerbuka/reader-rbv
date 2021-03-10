@@ -5,7 +5,7 @@ from requests import Session
 from typing import Any, Dict, Optional, Mapping
 
 from . import BookSection
-from .utils import get_url, parse_doc, moduls_to_json, moduls_from_json
+from .utils import get_url, parse_doc, sections_to_json, sections_from_json
 
 
 class Book(Mapping[str, BookSection]):
@@ -16,7 +16,7 @@ class Book(Mapping[str, BookSection]):
         session: Session,
         username: str,
         password: str,
-        moduls: Optional[Dict[str, BookSection]] = None,
+        sections: Optional[Dict[str, BookSection]] = None,
     ):
         self.logger = logging.getLogger(self.__class__.__qualname__)
         self.kode = kode
@@ -24,23 +24,23 @@ class Book(Mapping[str, BookSection]):
         self.session = session
         self.username = username
         self.password = password
-        if moduls:
-            self.moduls = moduls
+        if sections:
+            self.sections = sections
         else:
-            self.moduls = dict()
-        if not self.moduls:
+            self.sections = dict()
+        if not self.sections:
             self.logger.debug(f"{self.kode} Section is empty, gettig from the server")
             self.fetch()
 
     def __getitem__(self, key: str):
         self.logger.debug(f"{self.kode} Getting section {key}")
-        return self.moduls[key]
+        return self.sections[key]
 
     def __iter__(self):
-        return iter(self.moduls)
+        return iter(self.sections)
 
     def __len__(self):
-        return len(self.moduls)
+        return len(self.sections)
 
     def fetch(self):
         params = {"modul": self.kode}
@@ -69,14 +69,16 @@ class Book(Mapping[str, BookSection]):
                 password=self.password,
                 session=self.session,
             )
-            self.moduls[modul.doc] = modul
+            self.sections[modul.doc] = modul
             self.logger.debug(f"{self.kode} Got section {modul}")
-        self.logger.debug(f"{self.kode} Successfully fetch {len(self.moduls)} sections")
+        self.logger.debug(
+            f"{self.kode} Successfully fetch {len(self.sections)} sections"
+        )
 
     def asdict(self) -> Dict[str, Any]:
         return {
             "kode": self.kode,
-            "moduls": moduls_to_json(self.moduls),
+            "sections": sections_to_json(self.sections),
         }
 
     @classmethod
@@ -88,8 +90,8 @@ class Book(Mapping[str, BookSection]):
         username: str,
         password: str,
     ):
-        moduls = moduls_from_json(
-            moduls=data["moduls"],
+        sections = sections_from_json(
+            sections=data["sections"],
             m=BookSection,
             base=base,
             username=username,
@@ -102,5 +104,5 @@ class Book(Mapping[str, BookSection]):
             session=session,
             username=username,
             password=password,
-            moduls=moduls,
+            sections=sections,
         )

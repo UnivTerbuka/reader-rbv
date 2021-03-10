@@ -31,7 +31,7 @@ class Reader(Mapping[str, Book]):
     @cachedmethod(attrgetter("cache"))
     def get_buku(self, kode: str) -> Book:
         buku_data = get_cached_buku(kode)
-        if buku_data:
+        if self.cache is not None and buku_data:
             return Book.from_dict(
                 data=buku_data,
                 base=self.base,

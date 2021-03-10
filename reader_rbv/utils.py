@@ -64,6 +64,12 @@ def get_default_dir() -> str:
     return os.path.realpath(ret)
 
 
+def make_dir(path: str):
+    if os.path.isdir(path):
+        return
+    Path(path).mkdir(parents=True, exist_ok=True)
+
+
 DEFAULT_DIR = get_default_dir()
 
 

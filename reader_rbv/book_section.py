@@ -71,6 +71,10 @@ class BookSection(Mapping[int, Page]):
         page1 = self.get_page(1)
         return page1.pages
 
+    def add_cache_pages(self, pages: List[Page]):
+        for page in pages:
+            self.page_cache[page.number] = page
+
     @cachedmethod(attrgetter("page_cache"))
     def get_page(self, page: int) -> Page:
         if page < 1:
@@ -80,15 +84,13 @@ class BookSection(Mapping[int, Page]):
         cached_page = Page.from_cache(self, page=page)
         if cached_page:
             return cached_page
-        params = self.__make_params__(page)
-        headers = {"Referer": self.base + "?" + urlencode({"modul": self.subfolder})}
         res = get_url(
             session=self.session,
             url=self.base + "services/view.php",
-            params=params,
+            params=self._params(page),
             username=self.__username__,
             password=self.__password__,
-            headers=headers,
+            headers=self._headers,
         )
         jsonp = res.text[1:-1]
         pages = Page.from_jsonp(jsonp)
@@ -106,27 +108,6 @@ class BookSection(Mapping[int, Page]):
             )
         return image
 
-    def add_cache_pages(self, pages: List[Page]):
-        for page in pages:
-            self.page_cache[page.number] = page
-
-    def __make_params__(self, page: int, format_: str = "jsonp") -> dict:
-        return {
-            "doc": self.doc,
-            "format": format_,
-            "subfolder": self.subfolder + "/",
-            "page": (page // 10 + 1) * 10,
-        }
-
-    def asdict(self) -> Dict[str, Any]:
-        return {
-            "nama": self.nama,
-            "subfolder": self.subfolder,
-            "doc": self.doc,
-            "max_page": self.max_page,
-            "url": self.url,
-        }
-
     @classmethod
     def from_dict(
         cls,
@@ -143,3 +124,24 @@ class BookSection(Mapping[int, Page]):
             session=session,
             **data,
         )
+
+    @property
+    def _headers(self) -> dict:
+        return {"Referer": self.base + "?" + urlencode({"modul": self.subfolder})}
+
+    def _params(self, page: int, format_: str = "jsonp") -> dict:
+        return {
+            "doc": self.doc,
+            "format": format_,
+            "subfolder": self.subfolder + "/",
+            "page": (page // 10 + 1) * 10,
+        }
+
+    def asdict(self) -> Dict[str, Any]:
+        return {
+            "nama": self.nama,
+            "subfolder": self.subfolder,
+            "doc": self.doc,
+            "max_page": self.max_page,
+            "url": self.url,
+        }

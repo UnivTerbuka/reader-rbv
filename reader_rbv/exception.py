@@ -10,5 +10,5 @@ class BookNotFound(Exception):
     pass
 
 
-class ModulNotFound(Exception):
+class BookSectionNotFound(Exception):
     pass

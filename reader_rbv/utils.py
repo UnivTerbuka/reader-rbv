@@ -12,7 +12,7 @@ from reader_rbv.exception import InvalidCredential, Unreachable, BookNotFound
 
 if TYPE_CHECKING:
     from . import Book
-    from . import Modul
+    from . import BookSection
     from . import Page
 
 logger = logging.getLogger(__name__)
@@ -30,13 +30,13 @@ def parse_doc(href: str, strip: str = ".pdf") -> str:
 
 def moduls_from_json(
     moduls: Dict[str, Dict],
-    m: Type["Modul"],
+    m: Type["BookSection"],
     base: str,
     username: str,
     password: str,
     session: Session,
-) -> Dict[str, "Modul"]:
-    results: Dict[str, "Modul"] = dict()
+) -> Dict[str, "BookSection"]:
+    results: Dict[str, "BookSection"] = dict()
     for key, modul in moduls.items():
         results[key] = m.from_dict(
             data=modul,
@@ -48,7 +48,7 @@ def moduls_from_json(
     return results
 
 
-def moduls_to_json(moduls: Dict[str, "Modul"]) -> Dict[str, Dict]:
+def moduls_to_json(moduls: Dict[str, "BookSection"]) -> Dict[str, Dict]:
     results: Dict[str, Dict] = dict()
     for key, modul in moduls.items():
         results[key] = modul.asdict()

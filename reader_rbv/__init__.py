@@ -2,7 +2,7 @@ from .font import Font
 from .text import Text
 from .page import Page
 from .page_cache import PageCache
-from .modul import Modul
+from .book_section import BookSection
 from .book import Book
 from .book_cache import BookCache
 
@@ -17,7 +17,7 @@ __all__ = [
     "Text",
     "Page",
     "PageCache",
-    "Modul",
+    "BookSection",
     "Book",
     "BookCache",
     "Reader",

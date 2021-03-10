@@ -4,11 +4,11 @@ from bs4 import BeautifulSoup, Tag
 from requests import Session
 from typing import Any, Dict, Optional, Mapping
 
-from . import Modul
+from . import BookSection
 from .utils import get_url, parse_doc, moduls_to_json, moduls_from_json
 
 
-class Book(Mapping[str, Modul]):
+class Book(Mapping[str, BookSection]):
     def __init__(
         self,
         kode: str,
@@ -16,7 +16,7 @@ class Book(Mapping[str, Modul]):
         session: Session,
         username: str,
         password: str,
-        moduls: Optional[Dict[str, Modul]] = None,
+        moduls: Optional[Dict[str, BookSection]] = None,
     ):
         self.logger = logging.getLogger(self.__class__.__qualname__)
         self.kode = kode
@@ -59,7 +59,7 @@ class Book(Mapping[str, Modul]):
                 continue
             url = a["href"]
             doc = parse_doc(url)
-            modul = Modul(
+            modul = BookSection(
                 nama=a.getText(),
                 subfolder=self.kode,
                 doc=doc,
@@ -90,7 +90,7 @@ class Book(Mapping[str, Modul]):
     ):
         moduls = moduls_from_json(
             moduls=data["moduls"],
-            m=Modul,
+            m=BookSection,
             base=base,
             username=username,
             password=password,

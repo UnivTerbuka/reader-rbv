@@ -8,7 +8,7 @@ from . import Page, PageCache
 from .utils import get_url, get_cached_page, clean_doc
 
 
-class Modul(Mapping[int, Page]):
+class BookSection(Mapping[int, Page]):
     def __init__(
         self,
         nama: str,
@@ -127,7 +127,7 @@ class Modul(Mapping[int, Page]):
         username: str,
         password: str,
         session: Session,
-    ) -> "Modul":
+    ) -> "BookSection":
         return cls(
             base=base,
             username=username,

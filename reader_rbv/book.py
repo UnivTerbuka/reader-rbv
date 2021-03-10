@@ -8,7 +8,7 @@ from . import Modul
 from .utils import get_url, parse_doc, moduls_to_json, moduls_from_json
 
 
-class Buku(Mapping[str, Modul]):
+class Book(Mapping[str, Modul]):
     def __init__(
         self,
         kode: str,

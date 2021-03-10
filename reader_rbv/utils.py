@@ -11,7 +11,7 @@ from typing import Dict, Optional, Type, Union, TYPE_CHECKING
 from reader_rbv.exception import InvalidCredential, Unreachable, BookNotFound
 
 if TYPE_CHECKING:
-    from . import Buku
+    from . import Book
     from . import Modul
     from . import Page
 
@@ -98,7 +98,7 @@ def get_url(
     if not res.ok:
         raise Unreachable("RBV tidak dapat dihubungi")
     elif not res.text:
-        raise BookNotFound("Buku / halaman tidak ditemukan di RBV")
+        raise BookNotFound("Book / halaman tidak ditemukan di RBV")
     elif "Login" not in res.text:
         return res
     soup = BeautifulSoup(res.text, "html.parser")
@@ -145,7 +145,7 @@ def get_cached_page(kode: str, doc: str, page: int) -> Optional[dict]:
     return json_dict
 
 
-def cache_buku(buku: "Buku"):
+def cache_buku(buku: "Book"):
     filepath = cache_buku_filepath(buku.kode)
     if os.path.isfile(filepath):
         logger.debug(f"File cache buku {filepath} sudah ada, dilewati...")

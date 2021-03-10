@@ -36,6 +36,7 @@ class BookSection(Mapping[int, Page]):
         self.image_cache: MutableMapping[int, Image] = LRUCache(50)
         self.__username__ = username
         self.__password__ = password
+        self._max_page = 0
         if max_page is None:
             self._max_page = self.get_max_page()
         else:

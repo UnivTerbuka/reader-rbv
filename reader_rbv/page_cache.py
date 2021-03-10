@@ -1,8 +1,6 @@
 import time
 from cachetools import TTLCache
 
-from .utils import cache_page
-
 
 class PageCache(TTLCache):
     def __init__(
@@ -20,5 +18,5 @@ class PageCache(TTLCache):
 
     def popitem(self):
         key, value = super().popitem()
-        cache_page(value, self.code, self.doc)
+        value.save_to_file(self.code, self.doc)
         return key, value

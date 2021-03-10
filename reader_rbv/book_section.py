@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Mapping, MutableMapping, Optional
 from urllib.parse import urlencode
 
 from . import Image, Page, PageCache
-from .utils import get_url, get_cached_page, clean_doc
+from .utils import get_url, clean_doc
 
 
 class BookSection(Mapping[int, Page]):
@@ -76,9 +76,10 @@ class BookSection(Mapping[int, Page]):
             raise KeyError("key must be greater than 0")
         elif self.max_page and page > self.max_page:
             raise KeyError("key cant be greater than max_page")
-        page_data = get_cached_page(self.subfolder, self.doc, page)
-        if page_data:
-            return Page(**page_data)  # type: ignore[call-arg]
+        cached_page = Page.from_cache(self, page=page)
+        if cached_page:
+            self.page_cache[page] = cached_page
+            return cached_page
         params = self.__make_params__(page)
         headers = {"Referer": self.base + "?" + urlencode({"modul": self.subfolder})}
         res = get_url(

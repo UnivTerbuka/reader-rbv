@@ -1,8 +1,13 @@
 import attr
+import os
 import ujson as json
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
 
 from . import Font, Text
+from .utils import get_default_dir, make_dir
+
+if TYPE_CHECKING:
+    from . import BookSection
 
 
 @attr.dataclass(slots=True)
@@ -32,6 +37,15 @@ class Page:
             )
         return results
 
+    @classmethod
+    def from_cache(cls, section: "BookSection", page: int) -> Optional["Page"]:
+        filepath = cls._filepath(section.subfolder, section.doc, page, create=False)
+        if not os.path.isfile(filepath):
+            return None
+        with open(filepath, "r") as fp:
+            json_dict = json.load(fp)
+        return cls(**json_dict)
+
     def __str__(self) -> str:
         if self.texts is not None:
             return self.texts
@@ -46,3 +60,18 @@ class Page:
             out += str(text)
         self.texts = out
         return out
+
+    @staticmethod
+    def _filepath(code: str, doc: str, page: int, create: bool = True) -> str:
+        selection_path = os.path.join(get_default_dir(), code)
+        if create:
+            make_dir(selection_path)
+        return os.path.join(selection_path, f"{doc}-{page}.json")
+
+    def save_to_file(self, code: str, doc: str):
+        filepath = self._filepath(code, doc, self.number)
+        if os.path.isfile(filepath):
+            return
+        json_data = attr.asdict(self)
+        with open(filepath, "w") as fp:
+            json.dump(json_data, fp)

@@ -1,12 +1,20 @@
 import attr
 import logging
+import os
+import ujson as json
 
 from bs4 import BeautifulSoup, Tag
 from requests import Session
 from typing import Any, Dict, Mapping
 
 from . import BookSection
-from .utils import get_url, parse_doc, sections_to_json, sections_from_json
+from .utils import (
+    get_url,
+    parse_doc,
+    sections_to_json,
+    sections_from_json,
+    get_default_dir,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -98,3 +106,17 @@ class Book(Mapping[str, BookSection]):
             password=password,
             sections=sections,
         )
+
+    def save_to_file(self) -> bool:
+        filepath = self._filepath(self.code)
+        if os.path.isfile(filepath):
+            logger.debug(f"File {filepath} exist, skiping")
+            return False
+        buku_data = self.asdict()
+        with open(filepath, "w") as fp:
+            json.dump(buku_data, fp, indent=4)
+        return True
+
+    @staticmethod
+    def _filepath(code: str):
+        return os.path.join(get_default_dir(), code)

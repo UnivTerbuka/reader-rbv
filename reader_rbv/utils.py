@@ -10,7 +10,6 @@ from typing import Dict, Optional, Type, Union, TYPE_CHECKING
 from reader_rbv.exception import InvalidCredential, Unreachable, BookNotFound
 
 if TYPE_CHECKING:
-    from . import Book
     from . import BookSection
 
 logger = logging.getLogger(__name__)
@@ -124,15 +123,6 @@ def get_url(
 
 def cache_buku_filepath(code: str, ext: str = ".json") -> str:
     return os.path.join(DEFAULT_DIR, code + ext)
-
-
-def cache_book(book: "Book"):
-    filepath = cache_buku_filepath(book.code)
-    if os.path.isfile(filepath):
-        logger.debug(f"File cache buku {filepath} sudah ada, dilewati...")
-    buku_data = book.asdict()
-    with open(filepath, "w") as fp:
-        json.dump(buku_data, fp)
 
 
 def get_cached_buku(code: str) -> Optional[dict]:

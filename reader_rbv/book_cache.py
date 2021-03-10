@@ -1,10 +1,8 @@
 from cachetools import TTLCache
 
-from .utils import cache_book
-
 
 class BookCache(TTLCache):
     def popitem(self):
         key, value = super().popitem()
-        cache_book(value)
+        value.save_to_file()
         return key, value

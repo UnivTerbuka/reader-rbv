@@ -79,7 +79,6 @@ class BookSection(Mapping[int, Page]):
             raise KeyError("key cant be greater than max_page")
         cached_page = Page.from_cache(self, page=page)
         if cached_page:
-            self.page_cache[page] = cached_page
             return cached_page
         params = self.__make_params__(page)
         headers = {"Referer": self.base + "?" + urlencode({"modul": self.subfolder})}

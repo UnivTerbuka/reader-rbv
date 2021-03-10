@@ -1,6 +1,5 @@
 import logging
 import os
-import ujson as json
 
 from bs4 import BeautifulSoup, Tag
 from pathlib import Path
@@ -119,16 +118,3 @@ def get_url(
     if not res.ok:
         raise InvalidCredential("Username / password salah")
     return res
-
-
-def cache_buku_filepath(code: str, ext: str = ".json") -> str:
-    return os.path.join(DEFAULT_DIR, code + ext)
-
-
-def get_cached_buku(code: str) -> Optional[dict]:
-    filepath = cache_buku_filepath(code)
-    if not os.path.isfile(filepath):
-        return None
-    with open(filepath, "r") as fp:
-        json_dict = json.load(fp)
-    return json_dict

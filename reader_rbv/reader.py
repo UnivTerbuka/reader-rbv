@@ -8,7 +8,6 @@ from typing import Mapping, MutableMapping, Optional
 from reader_rbv.exception import BookNotFound
 from . import Book, BookCache
 from .constants import HEADERS
-from .utils import get_cached_buku
 
 
 class Reader(Mapping[str, Book]):
@@ -32,15 +31,16 @@ class Reader(Mapping[str, Book]):
 
     @cachedmethod(attrgetter("cache"))
     def get_buku(self, code: str) -> Book:
-        buku_data = get_cached_buku(code)
-        if self.cache is not None and buku_data:
-            return Book.from_dict(
-                data=buku_data,
-                base=self.base,
-                session=self.session,
+        if self.cache is not None:
+            cached_book = Book.from_cache(
+                code=code,
                 username=self.username,
                 password=self.password,
+                base=self.base,
+                session=self.session,
             )
+            if cached_book is not None:
+                return cached_book
         params = {"modul": code}
         self.logger.debug(f"Finding book with code = {code}")
         res = self.session.get(self.base, params=params)

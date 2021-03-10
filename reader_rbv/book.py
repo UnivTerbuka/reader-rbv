@@ -5,7 +5,7 @@ import ujson as json
 
 from bs4 import BeautifulSoup, Tag
 from requests import Session
-from typing import Any, Dict, Mapping
+from typing import Any, Dict, Mapping, Optional
 
 from . import BookSection
 from .utils import (
@@ -105,6 +105,29 @@ class Book(Mapping[str, BookSection]):
             username=username,
             password=password,
             sections=sections,
+        )
+
+    @classmethod
+    def from_cache(
+        cls,
+        code: str,
+        username: str,
+        password: str,
+        base: str,
+        session: Session,
+    ) -> Optional["Book"]:
+        filepath = cls._filepath(code)
+        if not os.path.isfile:
+            logger.debug(f"Not found {code} in cache")
+            return None
+        with open(filepath, "r") as fp:
+            json_dict = json.load(fp)
+        return cls.from_dict(
+            data=json_dict,
+            base=base,
+            session=session,
+            username=username,
+            password=password,
         )
 
     def save_to_file(self) -> bool:

@@ -69,7 +69,7 @@ class BookSection(Mapping[int, Page]):
         page1 = self.get_page(1)
         return page1.pages
 
-    @cachedmethod(attrgetter("cache"))
+    @cachedmethod(attrgetter("page_cache"))
     def get_page(self, page: int) -> Page:
         if page < 1:
             raise KeyError("key must be greater than 0")

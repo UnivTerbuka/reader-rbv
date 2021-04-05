@@ -100,7 +100,7 @@ def get_url(
         raise Unreachable("RBV tidak dapat dihubungi")
     elif not res.text:
         raise BookNotFound("Book / halaman tidak ditemukan di RBV")
-    elif "Login" not in res.text:
+    elif "About RBV V.2" not in res.text:
         return res
     soup = BeautifulSoup(res.text, "html.parser")
     data = {

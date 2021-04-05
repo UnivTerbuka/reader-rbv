@@ -19,8 +19,9 @@ class Image:
     filepath: Optional[str] = None
 
     def download(self, session: Session, username: str, password: str) -> str:
-        if self.is_exist():
-            logger.warning(f"Overwriting {self.filepath}!")
+        if self.is_exist() and self.filepath:
+            logger.debug(f"Exist {self.filepath}!")
+            return self.filepath
         url = self.url
         res = get_url(
             session=session,

@@ -117,7 +117,7 @@ class Book(Mapping[str, BookSection]):
         session: Session,
     ) -> Optional["Book"]:
         filepath = cls._filepath(code)
-        if not os.path.isfile:
+        if not os.path.isfile(filepath):
             logger.debug(f"Not found {code} in cache")
             return None
         with open(filepath, "r") as fp:

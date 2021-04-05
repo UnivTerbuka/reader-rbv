@@ -56,6 +56,11 @@ class Reader(Mapping[str, Book]):
             password=self.password,
         )
 
+    def __del__(self):
+        if self.cache:
+            while self.cache:
+                self.cache.popitem()
+
     def __getitem__(self, key: str) -> Book:
         return self.get_buku(key)
 

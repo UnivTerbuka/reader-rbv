@@ -42,6 +42,10 @@ class BookSection(Mapping[int, Page]):
         else:
             self._max_page = max_page
 
+    def __del__(self):
+        while self.page_cache:
+            self.page_cache.popitem()
+
     def __str__(self):
         return self.nama
 

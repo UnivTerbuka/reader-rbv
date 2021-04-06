@@ -1,5 +1,5 @@
 import attr
-from typing import List
+from typing import List, Union
 
 
 @attr.dataclass(slots=True)
@@ -12,15 +12,17 @@ class Text:
     text: str = attr.ib(order=False)
 
     @classmethod
-    def from_data(cls, data: list) -> "Text":
-        return cls(
-            height=data[0],
-            hLines=data[1],
-            vline=data[2],
-            fills=data[3],
-            font=data[4],
-            text=data[5],
-        )
+    def from_data(cls, data: Union[dict, list]) -> "Text":
+        if isinstance(data, list):
+            return cls(
+                height=data[0],
+                hLines=data[1],
+                vline=data[2],
+                fills=data[3],
+                font=data[4],
+                text=data[5],
+            )
+        return cls(**data)
 
     @classmethod
     def from_list(cls, data: List[list]) -> List["Text"]:

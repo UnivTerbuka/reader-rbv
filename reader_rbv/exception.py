@@ -12,3 +12,7 @@ class BookNotFound(Exception):
 
 class BookSectionNotFound(Exception):
     pass
+
+
+class GetImageFailed(Exception):
+    pass

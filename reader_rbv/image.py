@@ -57,13 +57,13 @@ class Image:
 
     @property
     def _headers(self) -> dict:
-        return {"Referer": self.base + f"index.php?modul={self.doc}"}
+        return {"Referer": self.base + f"index.php?modul={self.subfolder}"}
 
     @property
     def _query(self) -> dict:
         return {
             "doc": self.doc,
             "format": "jpg",
-            "subfolder": self.subfolder,
+            "subfolder": f"{self.subfolder}/",
             "page": self.page,
         }

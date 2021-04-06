@@ -5,7 +5,7 @@ from requests import Session
 from typing import Optional
 from urllib.parse import urlencode
 
-from .utils import get_default_dir, get_url
+from .utils import get_default_dir, get_image, make_dir
 
 logger = logging.getLogger(__name__)
 
@@ -22,21 +22,12 @@ class Image:
         if self.is_exist() and self.filepath:
             logger.debug(f"Exist {self.filepath}!")
             return self.filepath
-        url = self.url
-        res = get_url(
+        return get_image(
             session=session,
-            url=url,
             username=username,
             password=password,
-            headers=self._headers,
-            stream=True,
+            image=self,
         )
-        filepath = self._filepath
-        with open(filepath, "wb") as fp:
-            for chunk in res.iter_content(1024):
-                fp.write(chunk)
-        self.filepath = filepath
-        return filepath
 
     @property
     def url(self) -> str:

@@ -6,10 +6,16 @@ from pathlib import Path
 from requests import Response, Session
 from typing import Dict, Optional, Type, Union, TYPE_CHECKING
 
-from reader_rbv.exception import InvalidCredential, Unreachable, BookNotFound
+from reader_rbv.exception import (
+    InvalidCredential,
+    Unreachable,
+    BookNotFound,
+    GetImageFailed,
+)
 
 if TYPE_CHECKING:
     from . import BookSection
+    from . import Image
 
 logger = logging.getLogger(__name__)
 
@@ -85,6 +91,29 @@ def get_captcha(form: Tag) -> str:
     return str(c)
 
 
+def handle_captcha(
+    res: Response,
+    session: Session,
+    url: str,
+    username: str,
+    password: str,
+    params: Optional[dict] = None,
+) -> Response:
+    soup = BeautifulSoup(res.text, "html.parser")
+    data = {
+        "_submit_check": "1",
+        "username": username,
+        "password": password,
+        "ccaptcha": get_captcha(soup),
+        "submit": "Submit",
+    }
+    headers = {"Referer": res.url}
+    res = session.post(url, data=data, params=params, headers=headers)
+    if not res.ok:
+        raise InvalidCredential("Wrong Username or Password")
+    return res
+
+
 def get_url(
     session: Session,
     url: str,
@@ -97,21 +126,39 @@ def get_url(
 ) -> Response:
     res = session.get(url, params=params, headers=headers, *args, **kwargs)
     if not res.ok:
-        raise Unreachable("RBV tidak dapat dihubungi")
+        raise Unreachable("Server unreachable")
     elif not res.text:
-        raise BookNotFound("Book / halaman tidak ditemukan di RBV")
+        raise BookNotFound("Empty data")
     elif "About RBV V.2" not in res.text:
         return res
-    soup = BeautifulSoup(res.text, "html.parser")
-    data = {
-        "_submit_check": "1",
-        "username": username,
-        "password": password,
-        "ccaptcha": get_captcha(soup),
-        "submit": "Submit",
-    }
-    headers = {"Referer": res.url}
-    res = session.post(url, data=data, params=params, headers=headers)
+    return handle_captcha(res, session, url, username, password, params)
+
+
+def get_image(
+    session: Session,
+    username: str,
+    password: str,
+    image: "Image",
+) -> str:
+    res = session.get(image.url, headers=image._headers, stream=True)
     if not res.ok:
-        raise InvalidCredential("Username / password salah")
-    return res
+        raise GetImageFailed("Failed to get image")
+    elif res.encoding == "UTF-8":
+        res = session.get(
+            image.base + f"index.php?subfolder={image.subfolder}/&doc={image.doc}.pdf",
+        )
+        handle_captcha(
+            res=res,
+            session=session,
+            url=image.base + f"index.php?modul={image.subfolder}",
+            username=username,
+            password=password,
+        )
+        res = session.get(image.url, headers=image._headers, stream=True)
+    if res.encoding == "UTF-8":
+        raise GetImageFailed("Failed to get image")
+    with open(image._filepath, "wb") as fp:
+        for chunk in res.iter_content(1024):
+            fp.write(chunk)
+    image.filepath = image._filepath
+    return image.filepath

@@ -51,7 +51,9 @@ class Image:
     @property
     def _filepath(self) -> str:
         base = get_default_dir()
-        return os.path.join(base, self.subfolder, f"{self.doc}-{self.page}.jpg")
+        subfolder = os.path.join(base, self.subfolder)
+        make_dir(subfolder)
+        return os.path.join(subfolder, f"{self.doc}-{self.page}.jpg")
 
     @property
     def _headers(self) -> dict:

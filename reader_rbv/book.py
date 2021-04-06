@@ -135,11 +135,11 @@ class Book(Mapping[str, BookSection]):
         if os.path.isfile(filepath):
             logger.debug(f"File {filepath} exist, skiping")
             return False
-        buku_data = self.asdict()
+        book_data = self.asdict()
         with open(filepath, "w") as fp:
-            json.dump(buku_data, fp, indent=4)
+            json.dump(book_data, fp, indent=4)
         return True
 
     @staticmethod
     def _filepath(code: str):
-        return os.path.join(get_default_dir(), code)
+        return os.path.join(get_default_dir(), f"{code}.json")

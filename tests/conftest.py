@@ -1,7 +1,8 @@
 import os
 
-from pytest import fixture
 from dotenv import load_dotenv
+from pytest import fixture
+from requests import Session
 
 from reader_rbv import Reader
 
@@ -24,10 +25,19 @@ def base_url() -> str:
 
 
 @fixture
-def reader(username: str, password: str, base_url: str) -> Reader:
+def verify() -> bool:
+    ver = os.environ.get("URL_RBV", "Y")
+    return ver == "Y"
+
+
+@fixture
+def reader(username: str, password: str, base_url: str, verify: bool) -> Reader:
+    session = Session()
+    session.verify = verify
     return Reader(
         username=username,
         password=password,
         cache=None,
         base=base_url,
+        session=session,
     )

@@ -31,7 +31,6 @@ beautifulsoup4 = "^4.11.1"
 attrs = "^22.1.0"
 cachetools = "^5.2.0"
 ujson = "^5.4.0"
-cattrs = "^22.1.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

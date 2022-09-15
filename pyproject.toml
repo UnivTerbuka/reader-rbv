@@ -36,7 +36,6 @@ flake8 = "^3.8.4"
 mypy = "^0.971"
 pytest-cov = "^2.11.1"
 black = "^22.8.0"
-pre-commit = "^2.10.1"
 python-dotenv = "^0.15.0"
 pylint = "^2.7.2"
 

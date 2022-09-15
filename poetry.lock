@@ -583,7 +583,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "89420f1a320e6b33003e142711884a6886307ebb5f1d1fb99d0622d10b2f7cdf"
+content-hash = "4f04cad57a0c11df88f158368b8d7da45709b500b9f352002bf95bb359f435b1"
 
 [metadata.files]
 appdirs = []

@@ -24,9 +24,9 @@ classifiers=[
 
 [tool.poetry.dependencies]
 python = "^3.8"
-requests = "^2.28.1"
+requests = "^2.28.0"
 beautifulsoup4 = "^4.11.1"
-attrs = "^22.1.0"
+attrs = "^22.0.0"
 cachetools = "^5.2.0"
 ujson = "^5.4.0"
 
